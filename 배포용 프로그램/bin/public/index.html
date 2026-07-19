@@ -9,7 +9,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+body{font-family:'Noto Sans KR',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
 .header{background:#1e293b;border-bottom:1px solid #334155;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:18px;font-weight:700;color:#f1f5f9}.logo span{color:#818cf8}
 .header-btns{display:flex;gap:8px}
@@ -125,7 +125,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 <div class="steps-nav">
-  <div class="step-tab active" onclick="goStep(0)">1. 연구 질문</div>
+  <div class="step-tab active" onclick="goStep(0)">1. 주제</div>
   <div class="step-tab" onclick="goStep(1)">2. 비교 그룹 설정</div>
   <div class="step-tab" onclick="goStep(2)">3. 데이터 수집</div>
   <div class="step-tab" onclick="goStep(3)">4. 분석 결과</div>
@@ -136,7 +136,7 @@ textarea{resize:vertical;min-height:80px}
   <!-- STEP 1 -->
   <div class="step-panel active" id="step0">
     <div class="card">
-      <div class="card-title">연구 질문</div>
+      <div class="card-title">주제</div>
       <div class="card-desc">분석하고 싶은 내용을 자유롭게 작성하세요. AI 프롬프트 생성에 활용됩니다.</div>
       <textarea id="researchQuestion" placeholder="예: 코스피 5,000 / 6,000 / 7,000 돌파 시점에서 대중 반응은 어떻게 달라지는가?"></textarea>
       <div class="btn-row" style="justify-content:space-between">
@@ -244,7 +244,7 @@ textarea{resize:vertical;min-height:80px}
 
         <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">업데이트 이력</h3>
         <ul style="margin-left:20px;color:#94a3b8">
-          <li><strong style="color:#e2e8f0">v1.0</strong> (2026-04): 초기 버전 - 뉴스/블로그/유튜브 수집 + 키워드 분석 + SNA</li>
+          <li><strong style="color:#e2e8f0">v1.0</strong> (2026-04): 초기 버전 - 뉴스/유튜브 수집 + 키워드 분석 + SNA</li>
           <li><strong style="color:#e2e8f0">v1.1</strong> (2026-04): EDA 차트 추가 (산점도, 히트맵, 페어플롯)</li>
           <li><strong style="color:#e2e8f0">v1.2</strong> (2026-05): Google News 검색 지원 (기간 필터링 가능)</li>
           <li><strong style="color:#e2e8f0">v1.3</strong> (2026-05): 소스별 분리 분석 (뉴스 vs 유튜브 키워드 분리)</li>
@@ -316,7 +316,7 @@ Node.js + Express 서버
 /* ═══ STATE ═══ */
 const GC = ['#818cf8','#38bdf8','#f472b6','#fbbf24','#34d399','#fb923c'];
 let groups = [], collectedData = {}, analysisResults = {}, newsAnalysis = {}, youtubeAnalysis = {}, currentStep = 0;
-let stopwords = new Set(['font','quot','color','target','blank','href','amp','nbsp','lt','gt','br','div','span','class','style','width','height','src','img','http','https','www','com','html','strong','em','size','face','apos','middot','v.daum.net','daum','naver','nate','tistory','net','org','kr','co','nid','oid','aid','sid','article','news','blog','entry','search','query','display','start','sort','date','page','view','type','data','text','link','title','name','value','content','undefined','null','true','false','function','return','noopener','noreferrer','youtube','google']);
+let stopwords = new Set(['font','quot','color','target','blank','href','amp','nbsp','lt','gt','br','div','span','class','style','width','height','src','img','http','https','www','com','html','strong','em','size','face','apos','middot','v.daum.net','daum','naver','nate','tistory','net','org','kr','co','nid','oid','aid','sid','article','news','blog','entry','search','query','display','start','sort','date','page','view','type','data','text','link','title','name','value','content','undefined','null','true','false','function','return','noopener','noreferrer','youtube','google','the','a','an','in','on','at','to','for','of','with','by','from','as','is','was','are','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','need','must','it','its','this','that','these','those','he','she','they','we','you','i','me','him','her','us','them','my','your','his','our','their','who','whom','which','what','where','when','how','why','if','or','and','but','not','no','nor','so','yet','both','either','neither','each','every','all','any','few','more','most','other','some','such','than','too','very','just','also','about','up','out','into','over','after','before','between','under','again','further','then','once','here','there','only','own','same','through','during','above','below','against','among','around','because','since','until','while','although','though','even','still','already','always','never','often','sometimes','usually','however','therefore','thus','hence','instead','besides','moreover','furthermore','nevertheless','nonetheless','meanwhile','otherwise','anyway','indeed','certainly','perhaps','maybe','probably','actually','really','quite','rather','enough','almost','already','else','else','another']);
 let customPrompts = [];
 let reportSections = [{ title: '분석 개요', content: '' }, { title: 'AI 해석 결과', content: '' }, { title: '결론 및 제언', content: '' }];
 
@@ -358,8 +358,8 @@ function renderGroups() {
       </div>
       ${g.sources.youtube?`<div class="form-row form-row-3">
         <div class="form-group"><label>유튜브 검색어 (비워두면 위 검색어)</label><input value="${g.ytKeyword||''}" onchange="groups[${i}].ytKeyword=this.value"></div>
-        <div class="form-group"><label>영상 수</label><input type="number" value="${g.ytMaxResults}" onchange="groups[${i}].ytMaxResults=+this.value" min="1" max="50"></div>
-        <div class="form-group"><label>영상당 댓글 수</label><input type="number" value="${g.ytMaxComments}" onchange="groups[${i}].ytMaxComments=+this.value" min="0" max="500"></div>
+        <div class="form-group"><label>영상 수 (최대 50)</label><input type="number" value="${g.ytMaxResults}" onchange="groups[${i}].ytMaxResults=+this.value" min="1" max="50"></div>
+        <div class="form-group"><label>영상당 댓글 수 (최대 500)</label><input type="number" value="${g.ytMaxComments}" onchange="groups[${i}].ytMaxComments=+this.value" min="0" max="500"></div>
       </div>`:''}
     </div>`).join('');
 }
@@ -370,7 +370,7 @@ function log(m,t=''){const e=document.getElementById('collectLog');e.innerHTML+=
 function updateProgress(i,p){const f=document.querySelector(`#prog-${i} .progress-fill`),l=document.querySelector(`#prog-${i} .prog-pct`);if(f)f.style.width=p+'%';if(l)l.textContent=p+'%';if(p>=100&&f)f.classList.add('done')}
 function formatNum(n){if(n>=1e8)return(n/1e8).toFixed(1)+'억';if(n>=1e4)return(n/1e4).toFixed(1)+'만';if(n>=1e3)return(n/1e3).toFixed(1)+'천';return n.toString()}
 function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function cleanText(s){return(s||'').replace(/<[^>]+>/g,' ').replace(/&[a-z]+;/gi,' ').replace(/\s+/g,' ').trim()}
+function cleanText(s){const t=(s||'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&apos;/g,"'");return t.replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ').replace(/https?:\/\/\S+/g,' ').replace(/\s+/g,' ').trim()}
 
 /* ═══ COLLECTION ═══ */
 async function startCollection(){
@@ -385,7 +385,7 @@ async function startCollection(){
 
   for(let i=0;i<groups.length;i++){
     const g=groups[i]; if(!g.keyword.trim())continue;
-    collectedData[i]={news:[],blog:[],youtube:[],comments:[]};
+    collectedData[i]={news:[],youtube:[],comments:[]};
     let progress=0; const srcCount=Object.values(g.sources).filter(Boolean).length||1; const pctPer=Math.floor(100/srcCount);
 
     if(g.sources.gnews){
@@ -422,9 +422,9 @@ async function startCollection(){
 function renderCollectPreview(){
   document.getElementById('collectPreview').style.display='block';
   // 차트
-  const labels=[],newsD=[],blogD=[],ytD=[],cmtD=[];
-  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;labels.push(g.label);newsD.push(d.news?.length||0);blogD.push(d.blog?.length||0);ytD.push(d.youtube?.length||0);cmtD.push(d.comments?.length||0)});
-  makeChart('chartCollect',{type:'bar',data:{labels,datasets:[{label:'뉴스',data:newsD,backgroundColor:'#6366f1'},{label:'블로그',data:blogD,backgroundColor:'#38bdf8'},{label:'영상',data:ytD,backgroundColor:'#f472b6'},{label:'댓글',data:cmtD,backgroundColor:'#fbbf24'}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+  const labels=[],newsD=[],ytD=[],cmtD=[];
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;labels.push(g.label);newsD.push(d.news?.length||0);ytD.push(d.youtube?.length||0);cmtD.push(d.comments?.length||0)});
+  makeChart('chartCollect',{type:'bar',data:{labels,datasets:[{label:'뉴스',data:newsD,backgroundColor:'#6366f1'},{label:'영상',data:ytD,backgroundColor:'#f472b6'},{label:'댓글',data:cmtD,backgroundColor:'#fbbf24'}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
 
   // 데이터 테이블
   let html='';
@@ -432,7 +432,6 @@ function renderCollectPreview(){
     const d=collectedData[i];if(!d)return;
     html+=`<div class="card" style="margin-top:12px"><div class="card-title" style="color:${GC[i%GC.length]}">${g.label}
       <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'news')">뉴스 CSV</button>
-      <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'blog')">블로그 CSV</button>
       <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'youtube')">영상 CSV</button>
       <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'comments')">댓글 CSV</button>
     </div>`;
@@ -460,7 +459,6 @@ function renderCollectPreview(){
 function buildRows(i,type){
   const d=collectedData[i],g=groups[i];if(!d)return[];
   if(type==='news')return(d.news||[]).map(it=>({group:g.label,source:'news',title:cleanText(it.title),description:cleanText(it.description),date:it.pubDate||'',press:it.bloggername||'',link:it.link||it.originallink||''}));
-  if(type==='blog')return(d.blog||[]).map(it=>({group:g.label,source:'blog',title:cleanText(it.title),description:cleanText(it.description),date:it.postdate||it.pubDate||'',author:it.bloggername||'',link:it.link||''}));
   if(type==='youtube')return(d.youtube||[]).map(v=>({group:g.label,title:v.title,channel:v.channelTitle,viewCount:v.viewCount,likeCount:v.likeCount,commentCount:v.commentCount,publishedAt:v.publishedAt?.slice(0,10)||'',videoId:v.videoId}));
   if(type==='comments')return(d.comments||[]).map(c=>({group:g.label,videoTitle:c.videoTitle||'',author:c.author,text:c.text,likeCount:c.likeCount||0,publishedAt:c.publishedAt||'',videoId:c.videoId}));
   return[];
@@ -505,17 +503,17 @@ async function downloadAllCSV(){
 async function analyzeTexts(texts){
   const r=await(await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({texts,stopwords:[...stopwords],minLen:2})})).json();
   if(r.error)throw new Error(r.error);
-  for(const w of Object.keys(r.wordFreq)){if(stopwords.has(w)||/^[a-z]{1,4}$/i.test(w)&&stopwords.has(w.toLowerCase()))delete r.wordFreq[w];}
+  for(const w of Object.keys(r.wordFreq)){if(stopwords.has(w)||stopwords.has(w.toLowerCase()))delete r.wordFreq[w];}
   r.uniqueWords=Object.keys(r.wordFreq).length;
   r.totalWords=Object.values(r.wordFreq).reduce((s,v)=>s+v,0);
   return r;
 }
+function topWords(wf,n=30){return Object.entries(wf).filter(([w])=>!stopwords.has(w)&&!stopwords.has(w.toLowerCase())).sort((a,b)=>b[1]-a[1]).slice(0,n)}
 async function runAnalysis(){
   log('형태소 분석 시작...','log-ok'); analysisResults={}; newsAnalysis={}; youtubeAnalysis={};
   for(const[gi,data]of Object.entries(collectedData)){
     const allTexts=[],newsTexts=[],ytTexts=[];
     for(const it of(data.news||[])){const t=cleanText(it.title)+' '+cleanText(it.description);allTexts.push(t);newsTexts.push(t);}
-    for(const it of(data.blog||[])){const t=cleanText(it.title)+' '+cleanText(it.description);allTexts.push(t);newsTexts.push(t);}
     for(const c of(data.comments||[])){const t=c.text||'';allTexts.push(t);ytTexts.push(t);}
     if(!allTexts.length){log(`[${groups[gi]?.label}] 텍스트 없음`,'log-warn');continue;}
     try{
@@ -609,10 +607,10 @@ function renderResults(){
   /* ── 개요 ── */
   html+=`<div class="r-panel active" id="rp-${ti++}">`;
   html+=`<div class="metrics">`;
-  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;const tot=(d.news?.length||0)+(d.blog?.length||0)+(d.comments?.length||0);
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;const tot=(d.news?.length||0)+(d.comments?.length||0);
     const ytV=(d.youtube||[]).reduce((s,v)=>s+v.viewCount,0);
     html+=`<div class="metric"><div class="metric-label" style="color:${GC[i%GC.length]}">${g.label}</div><div class="metric-val">${tot.toLocaleString()}</div>
-      <div class="metric-sub">뉴스 ${d.news?.length||0} / 블로그 ${d.blog?.length||0} / 댓글 ${d.comments?.length||0}</div>
+      <div class="metric-sub">뉴스 ${d.news?.length||0} / 댓글 ${d.comments?.length||0}</div>
       ${d.youtube?.length?`<div class="metric-sub">영상 ${d.youtube.length}개 / 총 조회수 ${formatNum(ytV)}</div>`:''}</div>`;
   });
   html+=`</div>`;
@@ -631,7 +629,7 @@ function renderResults(){
   html+=`<div id="kwTableAll"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
   gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
   html+=`<th></th></tr>`;
-  const gTops={};gKeys.forEach(gi=>{gTops[gi]=Object.entries(analysisResults[gi].wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,30)});
+  const gTops={};gKeys.forEach(gi=>{gTops[gi]=topWords(analysisResults[gi].wordFreq,30)});
   for(let r=0;r<30;r++){
     html+=`<tr><td>${r+1}</td>`;
     let word='';
@@ -643,7 +641,7 @@ function renderResults(){
   html+=`<div id="kwTableNews" style="display:none"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
   gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
   html+=`<th></th></tr>`;
-  const nTops={};gKeys.forEach(gi=>{nTops[gi]=newsAnalysis[gi]?Object.entries(newsAnalysis[gi].wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,30):[]});
+  const nTops={};gKeys.forEach(gi=>{nTops[gi]=newsAnalysis[gi]?topWords(newsAnalysis[gi].wordFreq,30):[]});
   for(let r=0;r<30;r++){
     html+=`<tr><td>${r+1}</td>`;
     let word='';
@@ -655,7 +653,7 @@ function renderResults(){
   html+=`<div id="kwTableYt" style="display:none"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
   gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
   html+=`<th></th></tr>`;
-  const yTops={};gKeys.forEach(gi=>{yTops[gi]=youtubeAnalysis[gi]?Object.entries(youtubeAnalysis[gi].wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,30):[]});
+  const yTops={};gKeys.forEach(gi=>{yTops[gi]=youtubeAnalysis[gi]?topWords(youtubeAnalysis[gi].wordFreq,30):[]});
   for(let r=0;r<30;r++){
     html+=`<tr><td>${r+1}</td>`;
     let word='';
@@ -881,12 +879,12 @@ function drawOverviewCharts(){
     if(!analysisResults[i])return;
     const nr=newsAnalysis[i],yr=youtubeAnalysis[i];
     if(nr&&yr){
-      const ns=Object.entries(nr.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,20);
+      const ns=topWords(nr.wordFreq,20);
       makeChart(`chartKwN${i}`,{type:'bar',data:{labels:ns.map(([w])=>w),datasets:[{label:'뉴스',data:ns.map(([,f])=>f),backgroundColor:'#6366f1cc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
-      const ys=Object.entries(yr.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,20);
+      const ys=topWords(yr.wordFreq,20);
       makeChart(`chartKwY${i}`,{type:'bar',data:{labels:ys.map(([w])=>w),datasets:[{label:'유튜브',data:ys.map(([,f])=>f),backgroundColor:'#f59e0bcc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
     } else {
-      const s=Object.entries(analysisResults[i].wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,20);
+      const s=topWords(analysisResults[i].wordFreq,20);
       makeChart(`chartKw${i}`,{type:'bar',data:{labels:s.map(([w])=>w),datasets:[{label:'빈도',data:s.map(([,f])=>f),backgroundColor:GC[i%GC.length]+'cc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
     }
   });
@@ -1184,7 +1182,7 @@ function runFullSNA(){
 
   // 공출현 매트릭스
   const coMap={};
-  for(const doc of result.docWords){const ws=[...new Set(doc.filter(w=>!stopwords.has(w)))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
+  for(const doc of result.docWords){const ws=[...new Set(doc.filter(w=>!stopwords.has(w)&&!stopwords.has(w.toLowerCase())))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
   let edges=Object.entries(coMap).filter(([,c])=>c>=threshold).map(([k,c])=>{const[s,t]=k.split('\0');return{source:s,target:t,weight:c}}).sort((a,b)=>b.weight-a.weight);
   const nodeSet=new Set();edges.forEach(e=>{nodeSet.add(e.source);nodeSet.add(e.target)});
   let nodes=[...nodeSet].map(id=>({id,freq:result.wordFreq[id]||0})).sort((a,b)=>b.freq-a.freq).slice(0,maxNodes);
@@ -1359,7 +1357,6 @@ async function exportData(){
   const rawData=[];
   for(const[gi,data]of Object.entries(collectedData)){const label=groups[gi]?.label||gi;
     for(const it of(data.news||[]))rawData.push({group:label,source:'news',title:cleanText(it.title),description:cleanText(it.description),date:it.pubDate||'',press:it.bloggername||''});
-    for(const it of(data.blog||[]))rawData.push({group:label,source:'blog',title:cleanText(it.title),description:cleanText(it.description),date:it.postdate||it.pubDate||'',author:it.bloggername||''});
     for(const c of(data.comments||[]))rawData.push({group:label,source:'youtube',title:'',description:c.text||'',date:c.publishedAt||'',author:c.author||''});
   }
   const r=await fetch('/api/export/xlsx',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'전체데이터.xlsx',rawData})});
@@ -1372,12 +1369,12 @@ function generatePrompts(){
   const summaries=[];
   for(const[gi,r]of Object.entries(analysisResults)){
     const g=groups[gi],d=collectedData[gi];
-    const top20=Object.entries(r.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,20);
+    const top20=topWords(r.wordFreq,20);
 
     // 커뮤니티 정보
-    const topWords=new Set(Object.entries(r.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,40).map(([w])=>w));
+    const topWordSet=new Set(topWords(r.wordFreq,40).map(([w])=>w));
     const coMap={};
-    for(const doc of r.docWords){const ws=[...new Set(doc.filter(w=>topWords.has(w)))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
+    for(const doc of r.docWords){const ws=[...new Set(doc.filter(w=>topWordSet.has(w)))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
     const edges=Object.entries(coMap).filter(([,w])=>w>=2);
     const nodeSet=new Set();edges.forEach(([k])=>{const[s,t]=k.split('\0');nodeSet.add(s);nodeSet.add(t)});
     const density=nodeSet.size>1?(2*edges.length)/(nodeSet.size*(nodeSet.size-1)):0;
@@ -1420,11 +1417,11 @@ function generatePrompts(){
     // 소스별 키워드
     let srcKwInfo='';
     const nr=newsAnalysis[gi],yr=youtubeAnalysis[gi];
-    if(nr){const nTop=Object.entries(nr.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,10);srcKwInfo+=`\n뉴스 상위 키워드: ${nTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
-    if(yr){const yTop=Object.entries(yr.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,10);srcKwInfo+=`\n유튜브 댓글 상위 키워드: ${yTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
+    if(nr){const nTop=topWords(nr.wordFreq,10);srcKwInfo+=`\n뉴스 상위 키워드: ${nTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
+    if(yr){const yTop=topWords(yr.wordFreq,10);srcKwInfo+=`\n유튜브 댓글 상위 키워드: ${yTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
 
     summaries.push(`[${g.label}] 검색어: "${g.keyword}", 기간: ${g.dateFrom||'전체'}~${g.dateTo||'전체'}
-수집량: 뉴스 ${d.news?.length||0}건, 블로그 ${d.blog?.length||0}건, 유튜브 댓글 ${d.comments?.length||0}건
+수집량: 뉴스 ${d.news?.length||0}건, 유튜브 댓글 ${d.comments?.length||0}건
 ${ytDetail}${cmtTimeInfo}${sentInfo}
 상위 키워드(통합): ${top20.map(([w,f])=>`${w}(${f})`).join(', ')}${srcKwInfo}
 네트워크: 노드 ${nodeSet.size}개, 엣지 ${edges.length}개, 밀도 ${density.toFixed(3)}`);
@@ -1432,13 +1429,13 @@ ${ytDetail}${cmtTimeInfo}${sentInfo}
   const ctx=summaries.join('\n\n');
 
   const prompts=[
-    {title:'인사이트 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터에서 발견되는 핵심 패턴, 의미 있는 차이점, 주목할 만한 인사이트를 분석해주세요. 그룹 간 비교에 초점을 맞춰주세요. 특히 단어 공출현 네트워크의 모듈성(Modularity)을 기준으로 각 그룹의 담론 구조가 어떻게 다른지 해석해주세요.`},
-    {title:'학술적 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 학술적 관점에서 해석해주세요. 의제설정 이론, 프레이밍 이론, 미디어 담론 분석 등을 적용하고, 단어 공출현 네트워크의 모듈성(Modularity)과 커뮤니티 구조를 중심으로 분석해주세요.`},
-    {title:'사회적 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 사회 구조적 맥락에서 해석해주세요. 사회적 흐름, 집단 심리, 여론 형성 과정을 중심으로 분석하고, 네트워크 모듈성을 기반으로 담론의 분절화 정도를 평가해주세요.`},
-    {title:'문화적 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 문화적 코드와 담론의 관점에서 해석해주세요. 한국 사회의 문화적 맥락을 고려하여 분석해주세요.`},
-    {title:'기술적 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기술 트렌드와 산업 변화의 관점에서 해석해주세요.`},
-    {title:'비즈니스 분석',prompt:`다음은 "${question||'연구 질문'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 마케팅/PR 전략 수립의 관점에서 분석해주세요.`},
-    {title:'통합 분석 보고서',prompt:`다음은 "${question||'연구 질문'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기반으로 종합 보고서를 작성해주세요.\n\n[보고서 요구사항]\n1. 학술적, 사회적, 문화적, 기술적, 비즈니스 관점을 모두 포함\n2. 단어 공출현 네트워크의 모듈성(Modularity)을 중심으로 각 그룹의 담론 구조 차이를 비교 분석\n3. 보고서 형식: docx/html/pdf로 바로 변환 가능한 구조로 작성\n4. 반드시 포함할 항목:\n   - 표지 (제목, 작성일, 작성자)\n   - 목차 (점선 리더와 페이지 번호를 직접 텍스트로 작성. 예: "1. 서론 ··················· 2")\n   - 1. 서론 (연구 배경, 목적, 방법론)\n   - 2. 데이터 수집 개요 (소스별 수집량, 기간, 검색어)\n   - 3. 키워드 분석 (그룹별 상위 키워드 비교표)\n   - 4. SNA 네트워크 분석 (커뮤니티 구조, Modularity, PageRank, Eigenvector 해석)\n   - 5. 감성 분석 (키워드 사전 기반 긍정/부정/중립 분류, 좋아요 가중 공감도, 그룹 간 감성 비율 변화)\n   - 6. 소스별 비교 분석 (뉴스 vs 유튜브 댓글 키워드 차이)\n   - 7. 그룹별 비교 분석 (학술적/사회적/문화적/기술적/비즈니스 관점)\n   - 8. 결론 및 제언\n   - 참고문헌 (이론적 배경과 분석 기술/방법론 관련 문헌만 포함. 뉴스 기사나 유튜브 영상은 제외)\n5. 페이지 번호는 실제 본문 위치와 대조하여 보정할 것\n6. 목차는 Word의 TOC 필드가 아닌 실제 텍스트로 직접 작성하여 점선 리더와 페이지 번호가 바로 보이도록 할 것\n7. 각 장의 시작에는 페이지 나누기를 포함할 것\n8. 다음 그래프/시각화 삽입 위치를 본문 중 적절한 곳에 [그림 X: 제목] 형태로 표시하고, 그래프 아래에 캡션을 포함할 것:\n   - [그림 1: 그룹별 수집량 비교 차트]\n   - [그림 2: 뉴스 기사 수 시계열 추이]\n   - [그림 3: 그룹별 총 조회수 비교]\n   - [그림 4: 그룹별 좋아요/댓글 수 비교]\n   - [그림 5: 상위 키워드 빈도 비교 (그룹 A)]\n   - [그림 6: 상위 키워드 빈도 비교 (그룹 B)]\n   - [그림 7: 상위 키워드 빈도 비교 (그룹 C)]\n   - [그림 8: SNA 공출현 네트워크 그래프 (그룹 A)] — 노드 크기=빈도, 엣지 굵기=공출현, 색상=군집\n   - [그림 9: SNA 공출현 네트워크 그래프 (그룹 B)]\n   - [그림 10: SNA 공출현 네트워크 그래프 (그룹 C)]\n   - [그림 11: 산점도 — 댓글 수 vs 좋아요 수]\n   - [그림 12: 산점도 — 영상 길이 vs 조회수]\n   - [그림 13: 히트맵 — 요일·시간대별 댓글 분포]\n   - [그림 14: 페어플롯 — 조회수·좋아요·댓글수·영상길이]\n   - [그림 15: 그룹별 댓글 감성 비율 (건수 기준)]\n   - [그림 16: 그룹별 좋아요 가중 감성 비율 (공감도)]\n   - [그림 17: 뉴스 vs 유튜브 키워드 비교 (그룹별)]\n9. 모든 그래프는 본문 좌우 여백에 맞춰 중앙 정렬하고, 너비는 본문 폭의 90~100%로 통일할 것\n10. 최종 파일명은 연구 질문을 토대로 한글 핵심 키워드를 조합하여 제안할 것 (예: "코스피_돌파시점_대중반응_비교분석_보고서.docx")\n11. 중요: 위에 제공된 데이터(영상별 조회수, 좋아요, 댓글수, 영상 길이, 댓글 시간대 분포)는 모두 실측 데이터입니다. 추정값을 생성하지 말고, 제공된 실제 데이터만 사용하여 작성할 것. 데이터가 없는 항목은 '데이터 없음'으로 표기할 것\n12. 보고서 작성 완료 후 아래 자체 검증을 수행하고, 검증 결과를 보고서 맨 끝에 [자체 검증 결과] 섹션으로 첨부할 것:\n   - 조회수/좋아요/댓글수: 보고서 내 수치가 제공된 원본 데이터와 일치하는지 확인\n   - 뉴스 건수: 그룹별 수집량이 원본과 일치하는지 확인\n   - 키워드 순위/빈도: 상위 키워드 순위와 빈도가 원본과 일치하는지 확인\n   - SNA 지표: Modularity, PageRank, Eigenvector 값이 원본과 일치하는지 확인\n   - 댓글 시간대: 활발한 시간/요일이 원본과 일치하는지 확인\n   - "추정/예상/추산/가정" 단어가 보고서 본문에 사용되었는지 검색하여, 있다면 해당 부분을 실측 데이터 기반으로 수정할 것\n   - 모든 그래프 캡션에 "추정 기반" 표현이 없는지 확인할 것\n   - 참고문헌 최종 점검: 이론적 배경(프레이밍 이론, 의제설정 이론 등)과 분석 기술/방법론(SNA, Louvain, PageRank, 형태소 분석 등) 관련 문헌만 남기고, 뉴스 기사, 유튜브 영상, 블로그 포스트, 통계 자료, 정책 보고서 등은 모두 제거할 것. 참고문헌은 10개 이내로 핵심만 포함할 것`},
+    {title:'인사이트 분석',prompt:`다음은 "${question||'주제'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터에서 발견되는 핵심 패턴, 의미 있는 차이점, 주목할 만한 인사이트를 분석해주세요. 그룹 간 비교에 초점을 맞춰주세요. 특히 단어 공출현 네트워크의 모듈성(Modularity)을 기준으로 각 그룹의 담론 구조가 어떻게 다른지 해석해주세요.`},
+    {title:'학술적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 학술적 관점에서 해석해주세요. 의제설정 이론, 프레이밍 이론, 미디어 담론 분석 등을 적용하고, 단어 공출현 네트워크의 모듈성(Modularity)과 커뮤니티 구조를 중심으로 분석해주세요.`},
+    {title:'사회적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 사회 구조적 맥락에서 해석해주세요. 사회적 흐름, 집단 심리, 여론 형성 과정을 중심으로 분석하고, 네트워크 모듈성을 기반으로 담론의 분절화 정도를 평가해주세요.`},
+    {title:'문화적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 문화적 코드와 담론의 관점에서 해석해주세요. 한국 사회의 문화적 맥락을 고려하여 분석해주세요.`},
+    {title:'기술적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기술 트렌드와 산업 변화의 관점에서 해석해주세요.`},
+    {title:'비즈니스 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 마케팅/PR 전략 수립의 관점에서 분석해주세요.`},
+    {title:'통합 분석 보고서',prompt:`다음은 "${question||'주제'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기반으로 종합 보고서를 작성해주세요.\n\n[보고서 요구사항]\n1. 학술적, 사회적, 문화적, 기술적, 비즈니스 관점을 모두 포함\n2. 단어 공출현 네트워크의 모듈성(Modularity)을 중심으로 각 그룹의 담론 구조 차이를 비교 분석\n3. 보고서 형식: docx/html/pdf로 바로 변환 가능한 구조로 작성\n4. 반드시 포함할 항목:\n   - 표지 (제목, 작성일, 작성자)\n   - 목차 (점선 리더와 페이지 번호를 직접 텍스트로 작성. 예: "1. 서론 ··················· 2")\n   - 1. 서론 (연구 배경, 목적, 방법론)\n   - 2. 데이터 수집 개요 (소스별 수집량, 기간, 검색어)\n   - 3. 키워드 분석 (그룹별 상위 키워드 비교표)\n   - 4. SNA 네트워크 분석 (커뮤니티 구조, Modularity, PageRank, Eigenvector 해석)\n   - 5. 감성 분석 (키워드 사전 기반 긍정/부정/중립 분류, 좋아요 가중 공감도, 그룹 간 감성 비율 변화)\n   - 6. 소스별 비교 분석 (뉴스 vs 유튜브 댓글 키워드 차이)\n   - 7. 그룹별 비교 분석 (학술적/사회적/문화적/기술적/비즈니스 관점)\n   - 8. 결론 및 제언\n   - 참고문헌 (이론적 배경과 분석 기술/방법론 관련 문헌만 포함. 뉴스 기사나 유튜브 영상은 제외)\n5. 페이지 번호는 실제 본문 위치와 대조하여 보정할 것\n6. 목차는 Word의 TOC 필드가 아닌 실제 텍스트로 직접 작성하여 점선 리더와 페이지 번호가 바로 보이도록 할 것\n7. 각 장의 시작에는 페이지 나누기를 포함할 것\n8. 다음 그래프/시각화 삽입 위치를 본문 중 적절한 곳에 [그림 X: 제목] 형태로 표시하고, 그래프 아래에 캡션을 포함할 것:\n   - [그림 1: 그룹별 수집량 비교 차트]\n   - [그림 2: 뉴스 기사 수 시계열 추이]\n   - [그림 3: 그룹별 총 조회수 비교]\n   - [그림 4: 그룹별 좋아요/댓글 수 비교]\n   - [그림 5: 상위 키워드 빈도 비교 (그룹 A)]\n   - [그림 6: 상위 키워드 빈도 비교 (그룹 B)]\n   - [그림 7: 상위 키워드 빈도 비교 (그룹 C)]\n   - [그림 8: SNA 공출현 네트워크 그래프 (그룹 A)] — 노드 크기=빈도, 엣지 굵기=공출현, 색상=군집\n   - [그림 9: SNA 공출현 네트워크 그래프 (그룹 B)]\n   - [그림 10: SNA 공출현 네트워크 그래프 (그룹 C)]\n   - [그림 11: 산점도 — 댓글 수 vs 좋아요 수]\n   - [그림 12: 산점도 — 영상 길이 vs 조회수]\n   - [그림 13: 히트맵 — 요일·시간대별 댓글 분포]\n   - [그림 14: 페어플롯 — 조회수·좋아요·댓글수·영상길이]\n   - [그림 15: 그룹별 댓글 감성 비율 (건수 기준)]\n   - [그림 16: 그룹별 좋아요 가중 감성 비율 (공감도)]\n   - [그림 17: 뉴스 vs 유튜브 키워드 비교 (그룹별)]\n9. 모든 그래프는 본문 좌우 여백에 맞춰 중앙 정렬하고, 너비는 본문 폭의 90~100%로 통일할 것\n10. 최종 파일명은 주제을 토대로 한글 핵심 키워드를 조합하여 제안할 것 (예: "코스피_돌파시점_대중반응_비교분석_보고서.docx")\n11. 중요: 위에 제공된 데이터(영상별 조회수, 좋아요, 댓글수, 영상 길이, 댓글 시간대 분포)는 모두 실측 데이터입니다. 추정값을 생성하지 말고, 제공된 실제 데이터만 사용하여 작성할 것. 데이터가 없는 항목은 '데이터 없음'으로 표기할 것\n12. 보고서 작성 완료 후 아래 자체 검증을 수행하고, 검증 결과를 보고서 맨 끝에 [자체 검증 결과] 섹션으로 첨부할 것:\n   - 조회수/좋아요/댓글수: 보고서 내 수치가 제공된 원본 데이터와 일치하는지 확인\n   - 뉴스 건수: 그룹별 수집량이 원본과 일치하는지 확인\n   - 키워드 순위/빈도: 상위 키워드 순위와 빈도가 원본과 일치하는지 확인\n   - SNA 지표: Modularity, PageRank, Eigenvector 값이 원본과 일치하는지 확인\n   - 댓글 시간대: 활발한 시간/요일이 원본과 일치하는지 확인\n   - "추정/예상/추산/가정" 단어가 보고서 본문에 사용되었는지 검색하여, 있다면 해당 부분을 실측 데이터 기반으로 수정할 것\n   - 모든 그래프 캡션에 "추정 기반" 표현이 없는지 확인할 것\n   - 참고문헌 최종 점검: 이론적 배경(프레이밍 이론, 의제설정 이론 등)과 분석 기술/방법론(SNA, Louvain, PageRank, 형태소 분석 등) 관련 문헌만 남기고, 뉴스 기사, 유튜브 영상, 블로그 포스트, 통계 자료, 정책 보고서 등은 모두 제거할 것. 참고문헌은 10개 이내로 핵심만 포함할 것`},
     ...customPrompts
   ];
 
@@ -1477,7 +1474,7 @@ function copyPrompt(i,btn){navigator.clipboard.writeText(document.getElementById
 function addCustomPrompt(){
   const title=prompt('프롬프트 제목:');if(!title)return;
   const text=prompt('프롬프트 내용 (분석 결과는 자동 포함됩니다):');if(!text)return;
-  const ctx=Object.entries(analysisResults).map(([gi,r])=>{const g=groups[gi];const top=Object.entries(r.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,20);return`[${g.label}] ${top.map(([w,f])=>`${w}(${f})`).join(', ')}`}).join('\n');
+  const ctx=Object.entries(analysisResults).map(([gi,r])=>{const g=groups[gi];const top=topWords(r.wordFreq,20);return`[${g.label}] ${top.map(([w,f])=>`${w}(${f})`).join(', ')}`}).join('\n');
   customPrompts.push({title,prompt:`${text}\n\n[분석 데이터]\n${ctx}`});
   generatePrompts();
 }
@@ -1503,19 +1500,19 @@ function exportReport(format){
   // 데이터 요약
   let dataSummary='';
   groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;
-    dataSummary+=`### ${g.label}\n- 검색어: ${g.keyword}\n- 기간: ${g.dateFrom||'전체'} ~ ${g.dateTo||'전체'}\n- 뉴스: ${d.news?.length||0}건, 블로그: ${d.blog?.length||0}건, 유튜브 댓글: ${d.comments?.length||0}건\n\n`});
+    dataSummary+=`### ${g.label}\n- 검색어: ${g.keyword}\n- 기간: ${g.dateFrom||'전체'} ~ ${g.dateTo||'전체'}\n- 뉴스: ${d.news?.length||0}건, 유튜브 댓글: ${d.comments?.length||0}건\n\n`});
 
   // 키워드 요약
   let kwSummary='';
   Object.entries(analysisResults).forEach(([gi,r])=>{
-    const top=Object.entries(r.wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,15);
+    const top=topWords(r.wordFreq,15);
     kwSummary+=`### ${groups[gi].label}\n| 순위 | 단어 | 빈도 |\n|------|------|------|\n`;
     top.forEach(([w,f],j)=>{kwSummary+=`| ${j+1} | ${w} | ${f} |\n`});
     kwSummary+='\n';
   });
 
   const sections=reportSections.filter(s=>s.content.trim());
-  let md=`# ${title}\n\n**연구 질문:** ${question}\n**작성일:** ${date}\n\n---\n\n## 1. 데이터 수집 개요\n\n${dataSummary}\n## 2. 핵심 키워드 분석\n\n${kwSummary}`;
+  let md=`# ${title}\n\n**주제:** ${question}\n**작성일:** ${date}\n\n---\n\n## 1. 데이터 수집 개요\n\n${dataSummary}\n## 2. 핵심 키워드 분석\n\n${kwSummary}`;
   sections.forEach((s,i)=>{md+=`\n## ${i+3}. ${s.title}\n\n${s.content}\n`});
 
   if(format==='md'){
@@ -1659,7 +1656,7 @@ async function loadHistoryList(){
 
 async function saveToHistory(){
   const question=document.getElementById('researchQuestion')?.value||'';
-  if(!question&&!groups.some(g=>g.keyword)){alert('연구 질문이나 그룹 설정을 먼저 입력해주세요.');return;}
+  if(!question&&!groups.some(g=>g.keyword)){alert('주제이나 그룹 설정을 먼저 입력해주세요.');return;}
   try{
     const body={question,groups,collectedData,analysisResults,newsAnalysis,youtubeAnalysis,stopwordsList:[...stopwords],date:new Date().toISOString().slice(0,10)};
     const r=await(await fetch('/api/history/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
