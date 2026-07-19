@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myDataAnalysis — Project Proposal v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--primary:#4f46e5;--primary-light:#e0e7ff;--text:#1e293b;--text-light:#64748b;--border:#e2e8f0;--bg-code:#f8fafc}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',-apple-system,sans-serif;color:var(--text);line-height:1.85;font-size:15px;background:#fff}
+.cover-page{width:100%;height:100vh;display:flex;flex-direction:column;background:#fff;page-break-after:always}
+.cover-hero{flex:1;background:#4f46e5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;position:relative}
+.cover-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(124,58,237,.6) 0%,transparent 50%),radial-gradient(circle at 80% 30%,rgba(99,102,241,.5) 0%,transparent 50%)}
+.cover-hero>*{position:relative;z-index:1}
+.cover-badge{border:1.5px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85);padding:6px 24px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:40px}
+.cover-title{font-size:38px;font-weight:900;color:#fff;text-align:center;line-height:1.5;margin-bottom:24px;max-width:720px}
+.cover-title span{color:#c7d2fe}
+.cover-subtitle{font-size:18px;color:rgba(255,255,255,.75);text-align:center}
+.cover-info-area{background:#fff;padding:44px 40px 52px;text-align:center;border-top:4px solid var(--primary)}
+.cover-info-area .course{display:inline-block;background:var(--primary-light);color:var(--primary);padding:6px 22px;border-radius:6px;font-size:14px;font-weight:700;margin-bottom:20px}
+.cover-info-area .univ{font-size:21px;font-weight:800;margin-bottom:8px}
+.cover-info-area .date{font-size:15px;color:var(--text-light)}
+.content{max-width:780px;margin:0 auto;padding:40px 48px}
+h2{font-size:20px;font-weight:700;margin:40px 0 18px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);page-break-before:always}
+h2:first-child{page-break-before:avoid}
+h2::before{content:'';display:inline-block;width:8px;height:8px;background:var(--primary);border-radius:50%;margin-right:10px;vertical-align:middle}
+h3{font-size:15px;font-weight:700;color:var(--primary);margin:22px 0 10px}
+h4{font-size:14px;font-weight:600;color:#334155;margin:16px 0 8px}
+p{margin-bottom:10px}
+ul{margin:6px 0 14px 20px}
+li{margin-bottom:5px}
+strong{color:#334155}
+blockquote{border-left:4px solid var(--primary);background:var(--primary-light);padding:12px 18px;margin:14px 0 20px;border-radius:0 8px 8px 0;font-size:13.5px;color:#3730a3}
+blockquote strong{color:var(--primary)}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:11px}
+th{background:#f1f5f9;font-weight:600;color:#334155;padding:6px 8px;text-align:left;border:1px solid #cbd5e1;white-space:nowrap}
+td{padding:6px 8px;border:1px solid #cbd5e1}
+td.nw{white-space:nowrap}
+.tag{display:inline-block;background:var(--primary-light);color:var(--primary);font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600}
+.tag-g{background:#dcfce7;color:#166534}
+.insight-box{background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px}
+.insight-box strong{color:#92400e}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.card-grid-3{grid-template-columns:repeat(3,1fr)}
+.card-grid-4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card h4{margin:0 0 6px;font-size:13px}
+.card p{font-size:12px;color:var(--text-light);margin:0;line-height:1.7}
+.flow-step{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:6px 0}
+.flow-num{display:inline-flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;margin-right:8px}
+.flow-title{font-weight:600;color:var(--text)}
+.flow-desc{margin-top:4px;font-size:12px;color:var(--text-light);padding-left:30px}
+.flow-arrow{text-align:center;color:var(--primary);font-size:16px;line-height:1;padding:2px 0}
+.new-badge{display:inline-block;background:#dcfce7;color:#166534;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;margin-left:4px}
+.footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-light);text-align:center}
+@page{size:A4;margin:2cm}@page:first{margin:0}
+@media print{.cover-page{height:100vh;margin:0;padding:0}.content{max-width:none;padding:10px 0}body{font-size:12.5px}h2{page-break-before:always}h2:first-child{page-break-before:avoid}}
+</style>
+</head>
+<body>
+
+<div class="cover-page">
+  <div class="cover-hero">
+    <div class="cover-badge">Project Proposal v2</div>
+    <div class="cover-title">my<span>Data</span>Analysis</div>
+    <div class="cover-subtitle">멀티소스 통합 데이터 수집 & SNA 분석 플랫폼</div>
+  </div>
+  <div class="cover-info-area">
+    <div class="course">데이터 수집 및 분석 프로그래밍</div><br>
+    <div class="univ">고려대학교 미디어대학원 6조 — 이성훈 · 김성희</div>
+    <div class="date">2026. 06. 03</div>
+  </div>
+</div>
+
+<div class="content">
+
+<h2>1. 문제 인식 & 동기</h2>
+<h3>실무에서의 데이터 분석 현실</h3>
+<p>이 과목의 핵심은 <strong>데이터를 수집하고 분석하여 각자의 상황에 맞게 처리하는 것</strong>입니다. 그런데 실무에서는 이 과정이 반복 작업의 연속입니다.</p>
+<ul>
+<li><strong>매번 반복되는 작업</strong>: 여러 사이트에서 수집 → 포맷 통일 → 분석 → 시각화 → 해석</li>
+<li><strong>채널별 별도 도구</strong>: 뉴스는 빅카인즈, 텍스트는 텍스톰, 유튜브는 별도 크롤러</li>
+<li><strong>비교 분석의 어려움</strong>: 시점별, 채널별 비교를 하려면 같은 작업을 여러 번 반복</li>
+</ul>
+
+<h3>해결 방안</h3>
+<blockquote><p>이 <strong>반복 작업을 앱으로 자동화</strong>하면 불필요한 시간 낭비를 줄이고, 누구나 같은 품질의 분석을 빠르게 수행할 수 있습니다.</p></blockquote>
+<ul>
+<li><strong>하나의 앱에서 End-to-End 완결</strong>: 수집 → 분석 → 시각화 → AI 해석까지 원스톱</li>
+<li><strong>주제만 바꾸면 바로 재사용</strong>: 앱 구조가 동일하므로 어떤 주제든 같은 워크플로우로 분석 가능</li>
+</ul>
+<hr>
+
+<h2>2. 프로젝트 개요</h2>
+<blockquote><p><strong>myDataAnalysis</strong>는 하나의 연구 질문에서 출발하여, 뉴스 + 블로그 + 유튜브 데이터를 동시에 수집하고, 비교 그룹별 SNA 네트워크 분석 + EDA 시각화 + AI 해석 프롬프트까지 <strong>하나의 앱에서 End-to-End로 완결</strong>하는 통합 분석 플랫폼입니다.</p></blockquote>
+
+<table>
+<thead><tr><th>기존 방식</th><th>myDataAnalysis</th><th>효과</th></tr></thead>
+<tbody>
+<tr><td>채널별 별도 도구 사용</td><td>뉴스 + 블로그 + 유튜브 한 곳에서 수집</td><td>작업 시간 단축, 포맷 통일</td></tr>
+<tr><td>단일 시점 분석</td><td>비교 그룹별 나란히 분석</td><td>변화 추이, 차이점 즉시 파악</td></tr>
+<tr><td>수집 따로, 분석 따로, 해석 따로</td><td>수집 → 형태소 → SNA → EDA → AI 원스톱</td><td>워크플로우 일원화</td></tr>
+</tbody>
+</table>
+
+<h3>실무 활용 시나리오</h3>
+<ul>
+<li><strong>PR팀</strong>: 브랜드 위기 전/중/후 여론 프레임 변화 추적</li>
+<li><strong>마케팅팀</strong>: 경쟁 브랜드 간 미디어 포지셔닝 비교</li>
+<li><strong>리서치팀</strong>: 사회 이슈에 대한 채널별 담론 분석</li>
+<li><strong>기획팀</strong>: 신제품 출시 전후 소비자 인식 변화 모니터링</li>
+</ul>
+<hr>
+
+<h2>3. 분석 플로우</h2>
+<p>연구 질문부터 인사이트까지, 5단계 워크플로우:</p>
+
+<div class="flow-step"><span class="flow-num">1</span><span class="flow-title">연구 질문 입력</span><div class="flow-desc">자유 텍스트로 분석 목적 기술 + 작업 히스토리 저장/로드 <span class="new-badge">NEW</span></div></div>
+<div class="flow-arrow">▼</div>
+<div class="flow-step"><span class="flow-num">2</span><span class="flow-title">비교 그룹 설정</span><div class="flow-desc">그룹별 검색어, 기간, 소스, 수집 건수(최대 1,000건) 직접 설정</div></div>
+<div class="flow-arrow">▼</div>
+<div class="flow-step"><span class="flow-num">3</span><span class="flow-title">멀티소스 데이터 수집</span><div class="flow-desc">네이버 뉴스/블로그 + 구글 뉴스 + 유튜브(영상 메타 + 댓글) — 그룹별 CSV 다운로드 <span class="new-badge">NEW</span></div></div>
+<div class="flow-arrow">▼</div>
+<div class="flow-step"><span class="flow-num">4</span><span class="flow-title">분석 결과</span><div class="flow-desc">형태소 분석 + 키워드 비교 + SNA 네트워크(Louvain, PageRank, Eigenvector) + EDA 시각화 <span class="new-badge">NEW</span></div></div>
+<div class="flow-arrow">▼</div>
+<div class="flow-step"><span class="flow-num">5</span><span class="flow-title">AI 프롬프트 + 보고서</span><div class="flow-desc">7가지 관점 프롬프트 → ChatGPT/Claude/Gemini 복사 → 보고서 생성(HTML/MD/PDF) <span class="new-badge">NEW</span></div></div>
+<hr>
+
+<h2>4. 데이터 소스</h2>
+<div class="card-grid card-grid-4">
+<div class="card"><h4>네이버 뉴스</h4><p>API (최대 1,000건) + 웹 스크래핑 (날짜 검색)</p></div>
+<div class="card"><h4>네이버 블로그</h4><p>API (최대 1,000건) + 구글 RSS 경유</p></div>
+<div class="card"><h4>구글 뉴스</h4><p>RSS 기반, API 키 불필요. 날짜 분할 대량 수집</p></div>
+<div class="card"><h4>유튜브</h4><p>YouTube Data API v3. 영상 메타 + 댓글 수집</p></div>
+</div>
+
+<table>
+<thead><tr><th>소스</th><th>API 키</th><th>날짜 검색</th><th>최대 건수</th><th>수집 항목</th></tr></thead>
+<tbody>
+<tr><td class="nw">네이버 뉴스 (API)</td><td><span class="tag">필요</span></td><td>불가</td><td class="nw">1,000건</td><td>제목, 본문 요약, 언론사, 날짜</td></tr>
+<tr><td class="nw">네이버 뉴스 (웹)</td><td><span class="tag tag-g">불필요</span></td><td>가능</td><td class="nw">~100건</td><td>제목, 본문 요약, 언론사, 날짜</td></tr>
+<tr><td class="nw">구글 뉴스 (RSS)</td><td><span class="tag tag-g">불필요</span></td><td>가능</td><td class="nw">1,000건+</td><td>제목, 요약, 출처, 날짜</td></tr>
+<tr><td class="nw">유튜브 (API)</td><td><span class="tag">필요</span></td><td>가능</td><td class="nw">설정 가능</td><td>영상 제목, 조회수, 좋아요, 댓글</td></tr>
+</tbody>
+</table>
+<hr>
+
+<h2>5. 분석 기능</h2>
+<h3>형태소 분석</h3>
+<table>
+<thead><tr><th>기능</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td class="nw"><strong>명사 추출</strong></td><td>kiwipiepy — 일반/고유명사, 외래어</td></tr>
+<tr><td class="nw"><strong>불용어</strong></td><td>기본 70+개 + 사용자 추가/삭제 + 실시간 제외 버튼</td></tr>
+<tr><td class="nw"><strong>정제</strong></td><td>HTML 태그, 엔티티, URL 잔재 자동 제거</td></tr>
+<tr><td class="nw"><strong>비교</strong></td><td>그룹별 Top 30 키워드 비교표</td></tr>
+</tbody>
+</table>
+
+<h3>SNA 네트워크</h3>
+<table>
+<thead><tr><th>기능</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td class="nw"><strong>시각화</strong></td><td>D3.js 인터랙티브 (줌/패닝/드래그)</td></tr>
+<tr><td class="nw"><strong>군집 탐지</strong></td><td>Louvain 알고리즘 (다중 재시작, 해상도 조절)</td></tr>
+<tr><td class="nw"><strong>지표</strong></td><td>PageRank, Eigenvector, Modularity, Diameter</td></tr>
+<tr><td class="nw"><strong>레이아웃</strong></td><td>자유 배치 / 커뮤니티 / PageRank / Eigenvector</td></tr>
+<tr><td class="nw"><strong>내보내기</strong></td><td>XLSX/CSV (텍스톰/Gephi 호환)</td></tr>
+</tbody>
+</table>
+<hr>
+
+<h2>6. EDA 시각화</h2>
+<div class="card-grid card-grid-3">
+<div class="card"><h4>산점도 (Scatter Plot)</h4><p>댓글 수 vs 좋아요 — 참여도 상관관계<br>영상 길이 vs 조회수 — 최적 영상 길이 패턴</p></div>
+<div class="card"><h4>히스토그램 + 박스플롯</h4><p>그룹별 조회수 분포 비교<br>중앙값, 사분위, 이상치 한눈에 파악</p></div>
+<div class="card"><h4>히트맵 (Heatmap)</h4><p>요일 × 시간대별 영상 업로드 분포<br>요일 × 시간대별 댓글 작성 분포</p></div>
+</div>
+<div class="card-grid">
+<div class="card"><h4>페어플롯 (Pair Plot)</h4><p>조회수·좋아요·댓글수·영상길이 4개 지표의 모든 조합 상관관계를 4×4 매트릭스로 비교. 그룹별 필터링 가능</p></div>
+<div class="card"><h4>시계열 차트</h4><p>뉴스 기사 수 시계열 추이 (그룹별 비교)<br>유튜브 영상 게시일 분포<br>그룹별 총 조회수 / 좋아요+댓글 비교</p></div>
+</div>
+<hr>
+
+<h2>7. 사용 예시</h2>
+<div class="insight-box"><strong>EXAMPLE 1 — 경제 이슈</strong><br>"코스피 5,000 / 6,000 / 7,000 / 8,000 돌파 시점에서 대중 반응은 어떻게 달라지는가?"</div>
+
+<table>
+<thead><tr><th>항목</th><th>그룹 A</th><th>그룹 B</th><th>그룹 C</th><th>그룹 D</th></tr></thead>
+<tbody>
+<tr><td class="nw"><strong>라벨</strong></td><td>코스피 5,000</td><td>코스피 6,000</td><td>코스피 7,000</td><td>코스피 8,000</td></tr>
+<tr><td class="nw"><strong>소스</strong></td><td colspan="4">구글 뉴스 + 유튜브 (영상 50개 + 댓글)</td></tr>
+<tr><td class="nw"><strong>인사이트</strong></td><td colspan="4">감성 변화 패턴 · 뉴스 vs 유튜브 프레임 차이 · 세 가지 괴리 발견</td></tr>
+</tbody>
+</table>
+
+<div class="card-grid">
+<div class="insight-box"><strong>EXAMPLE 2 — 브랜드 PR</strong><br>"갤럭시 S26 출시 전후 뉴스 vs 유튜브 담론 차이"</div>
+<div class="insight-box"><strong>EXAMPLE 3 — 사회 이슈</strong><br>"저출산 정책 여론, 정권별 변화 추이"</div>
+</div>
+<hr>
+
+<h2>8. AI 프롬프트 연동</h2>
+<p>AI API 없이, 복사-붙여넣기로 AI를 활용합니다.</p>
+
+<h3>7가지 해석 프롬프트 (자동 생성)</h3>
+<table>
+<thead><tr><th>관점</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td class="nw"><strong>인사이트</strong></td><td>핵심 패턴, 모듈성 기반 해석</td></tr>
+<tr><td class="nw"><strong>학술적</strong></td><td>의제설정, 프레이밍 이론</td></tr>
+<tr><td class="nw"><strong>사회적</strong></td><td>사회 구조적 맥락</td></tr>
+<tr><td class="nw"><strong>문화적</strong></td><td>문화 코드, 담론 해석</td></tr>
+<tr><td class="nw"><strong>기술적</strong></td><td>기술 트렌드, 산업 변화</td></tr>
+<tr><td class="nw"><strong>비즈니스</strong></td><td>마케팅/PR 전략 도출</td></tr>
+<tr><td class="nw"><strong>통합 보고서</strong></td><td>종합 보고서 (docx/html/pdf)</td></tr>
+</tbody>
+</table>
+
+<h3>통합 보고서 자동 구성</h3>
+<ul>
+<li>표지 + 목차 (점선 리더 + 페이지 번호)</li>
+<li>서론, 데이터 수집 개요, 키워드 분석, SNA 네트워크 분석</li>
+<li>그룹별 비교 (5가지 관점), 결론 및 제언, 참고문헌</li>
+<li><strong>14개 그래프 삽입 위치 자동 표시</strong></li>
+<li>ChatGPT / Claude / Gemini 원클릭 바로가기 버튼</li>
+</ul>
+<hr>
+
+<h2>9. 추가 기능</h2>
+<div class="card-grid card-grid-3">
+<div class="card"><h4>작업 히스토리</h4><p>연구 질문 + 그룹 설정 + 수집 데이터 + 분석 결과를 JSON으로 저장. 클릭 한 번으로 즉시 복원</p></div>
+<div class="card"><h4>데이터 내보내기</h4><p>그룹별 CSV 다운로드. 전체 ZIP(5개 CSV). SNA XLSX/CSV (Gephi 호환)</p></div>
+<div class="card"><h4>보고서 생성</h4><p>AI 해석 결과 붙여넣기 → 보고서 자동 구성. HTML / Markdown / PDF 출력</p></div>
+</div>
+<div class="card-grid card-grid-3">
+<div class="card"><h4>불용어 관리</h4><p>기본 70+개. 실시간 제외 버튼. 수동 추가/삭제</p></div>
+<div class="card"><h4>첫 실행 설치 가이드</h4><p>Python / kiwipiepy 자동 감지. 미설치 시 원클릭 설치. 설치 없이 정규식 모드 동작</p></div>
+<div class="card"><h4>독립 실행파일 배포</h4><p>Mac (Apple Silicon / Intel) + Windows. 더블클릭으로 실행, 브라우저 자동 열림</p></div>
+</div>
+<hr>
+
+<h2>10. 기술 스택 & 산출물</h2>
+<table>
+<thead><tr><th>구분</th><th>기술</th><th>선정 이유</th></tr></thead>
+<tbody>
+<tr><td class="nw">프론트엔드</td><td>HTML + CSS + JS, D3.js, Chart.js</td><td>빌드 없이 브라우저에서 즉시 실행</td></tr>
+<tr><td class="nw">백엔드</td><td>Node.js + Express</td><td>API 프록시, 데이터 가공, 히스토리 저장</td></tr>
+<tr><td class="nw">형태소 분석</td><td>Python + kiwipiepy</td><td>C++ 기반 고속 한국어 분석</td></tr>
+<tr><td class="nw">유튜브</td><td>YouTube Data API v3</td><td>영상 검색, 메타데이터, 댓글 수집</td></tr>
+<tr><td class="nw">뉴스/블로그</td><td>네이버 API + 구글 RSS</td><td>날짜 검색, 대량 수집</td></tr>
+<tr><td class="nw">배포</td><td>pkg (독립 실행파일)</td><td>Windows/macOS 설치 없이 실행</td></tr>
+</tbody>
+</table>
+
+<h3>산출물</h3>
+<div class="card-grid card-grid-4">
+<div class="card"><h4>myDataAnalysis 앱</h4><p>Win/macOS 독립 실행파일 + 웹 UI</p></div>
+<div class="card"><h4>분석 데이터셋</h4><p>멀티소스 수집 데이터 (XLSX/CSV)</p></div>
+<div class="card"><h4>분석 보고서</h4><p>SNA + EDA + AI 해석 (HTML/PDF)</p></div>
+<div class="card"><h4>역할 분담</h4><p>개발 / 수집 / 해석 / 발표</p></div>
+</div>
+<hr>
+
+<h2>11. 기대 효과</h2>
+<div class="card-grid">
+<div class="card"><h4>학술적 가치</h4><p>멀티소스 비교를 통한 미디어 담론 연구 방법론 제시<br>SNA + EDA 융합 분석 프레임워크<br>Modularity 기반 담론 구조 비교 방법론</p></div>
+<div class="card"><h4>실무적 가치</h4><p>여론 모니터링 자동화 — 반복 작업 제거<br>비교 그룹 기반 분석 — 의사결정 근거 강화<br>AI 프롬프트 연동 — 분석 해석의 다각화<br>히스토리 기능 — 분석 재현성 보장</p></div>
+</div>
+<div class="card-grid">
+<div class="card"><h4>기존 도구 대비 차별점</h4><p>빅카인즈: 뉴스만 → 뉴스+블로그+유튜브 통합<br>텍스톰: 분석만 → 수집부터 보고서까지 원스톱<br>개별 크롤러: 주제별 재작성 → 주제만 바꾸면 재사용</p></div>
+<div class="card"><h4>확장 가능성</h4><p>AI API 연동 시 앱 내 자동 해석 가능<br>감성 분석, 토픽 모델링 등 추가 분석 모듈 확장<br>다국어 지원 (형태소 엔진 교체)</p></div>
+</div>
+
+<div class="footer">고려대학교 미디어대학원 6조 | 이성훈 / 김성희 | 2026. 06. 03</div>
+</div>
+</body>
+</html>

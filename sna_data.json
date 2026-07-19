@@ -1,0 +1,2034 @@
+{
+  "0": {
+    "label": "코스피 5000",
+    "nodes": [
+      {
+        "id": "코스피",
+        "freq": 1073,
+        "community": 0
+      },
+      {
+        "id": "주식",
+        "freq": 666,
+        "community": 1
+      },
+      {
+        "id": "대통령",
+        "freq": 644,
+        "community": 0
+      },
+      {
+        "id": "이재명",
+        "freq": 467,
+        "community": 0
+      },
+      {
+        "id": "사람",
+        "freq": 454,
+        "community": 1
+      },
+      {
+        "id": "나라",
+        "freq": 435,
+        "community": 2
+      },
+      {
+        "id": "감사",
+        "freq": 433,
+        "community": 3
+      },
+      {
+        "id": "국민",
+        "freq": 399,
+        "community": 2
+      },
+      {
+        "id": "투자",
+        "freq": 306,
+        "community": 1
+      },
+      {
+        "id": "경제",
+        "freq": 263,
+        "community": 4
+      },
+      {
+        "id": "대표",
+        "freq": 259,
+        "community": 3
+      },
+      {
+        "id": "생각",
+        "freq": 255,
+        "community": 2
+      },
+      {
+        "id": "인간",
+        "freq": 242,
+        "community": 2
+      },
+      {
+        "id": "대한민국",
+        "freq": 227,
+        "community": 3
+      },
+      {
+        "id": "시장",
+        "freq": 219,
+        "community": 1
+      },
+      {
+        "id": "정치",
+        "freq": 211,
+        "community": 4
+      },
+      {
+        "id": "의원",
+        "freq": 209,
+        "community": 3
+      },
+      {
+        "id": "시대",
+        "freq": 204,
+        "community": 0
+      },
+      {
+        "id": "주가",
+        "freq": 197,
+        "community": 4
+      },
+      {
+        "id": "이준석",
+        "freq": 193,
+        "community": 4
+      }
+    ],
+    "edges": [
+      {
+        "source": "대통령",
+        "target": "이재명",
+        "weight": 233
+      },
+      {
+        "source": "시장",
+        "target": "주식",
+        "weight": 92
+      },
+      {
+        "source": "주식",
+        "target": "투자",
+        "weight": 91
+      },
+      {
+        "source": "시대",
+        "target": "코스피",
+        "weight": 85
+      },
+      {
+        "source": "감사",
+        "target": "대표",
+        "weight": 82
+      },
+      {
+        "source": "대통령",
+        "target": "코스피",
+        "weight": 79
+      },
+      {
+        "source": "국민",
+        "target": "나라",
+        "weight": 61
+      },
+      {
+        "source": "국민",
+        "target": "대통령",
+        "weight": 55
+      },
+      {
+        "source": "사람",
+        "target": "주식",
+        "weight": 55
+      },
+      {
+        "source": "이재명",
+        "target": "코스피",
+        "weight": 53
+      },
+      {
+        "source": "대통령",
+        "target": "주식",
+        "weight": 48
+      },
+      {
+        "source": "주식",
+        "target": "코스피",
+        "weight": 48
+      },
+      {
+        "source": "감사",
+        "target": "대통령",
+        "weight": 48
+      },
+      {
+        "source": "국민",
+        "target": "이재명",
+        "weight": 46
+      },
+      {
+        "source": "경제",
+        "target": "코스피",
+        "weight": 45
+      },
+      {
+        "source": "감사",
+        "target": "주식",
+        "weight": 45
+      },
+      {
+        "source": "국민",
+        "target": "대한민국",
+        "weight": 44
+      },
+      {
+        "source": "대통령",
+        "target": "대한민국",
+        "weight": 41
+      },
+      {
+        "source": "생각",
+        "target": "주식",
+        "weight": 38
+      },
+      {
+        "source": "이재명",
+        "target": "주식",
+        "weight": 36
+      },
+      {
+        "source": "나라",
+        "target": "사람",
+        "weight": 36
+      },
+      {
+        "source": "감사",
+        "target": "이재명",
+        "weight": 35
+      },
+      {
+        "source": "대표",
+        "target": "주식",
+        "weight": 35
+      },
+      {
+        "source": "대한민국",
+        "target": "이재명",
+        "weight": 34
+      },
+      {
+        "source": "감사",
+        "target": "투자",
+        "weight": 34
+      },
+      {
+        "source": "나라",
+        "target": "대통령",
+        "weight": 34
+      },
+      {
+        "source": "나라",
+        "target": "인간",
+        "weight": 33
+      },
+      {
+        "source": "사람",
+        "target": "생각",
+        "weight": 33
+      },
+      {
+        "source": "시장",
+        "target": "코스피",
+        "weight": 32
+      },
+      {
+        "source": "대통령",
+        "target": "사람",
+        "weight": 32
+      },
+      {
+        "source": "코스피",
+        "target": "투자",
+        "weight": 31
+      },
+      {
+        "source": "경제",
+        "target": "주식",
+        "weight": 30
+      },
+      {
+        "source": "나라",
+        "target": "주식",
+        "weight": 30
+      },
+      {
+        "source": "나라",
+        "target": "생각",
+        "weight": 29
+      },
+      {
+        "source": "국민",
+        "target": "코스피",
+        "weight": 28
+      },
+      {
+        "source": "나라",
+        "target": "코스피",
+        "weight": 28
+      },
+      {
+        "source": "사람",
+        "target": "이재명",
+        "weight": 28
+      },
+      {
+        "source": "이준석",
+        "target": "정치",
+        "weight": 27
+      },
+      {
+        "source": "감사",
+        "target": "국민",
+        "weight": 27
+      },
+      {
+        "source": "사람",
+        "target": "정치",
+        "weight": 27
+      },
+      {
+        "source": "사람",
+        "target": "투자",
+        "weight": 26
+      },
+      {
+        "source": "생각",
+        "target": "코스피",
+        "weight": 25
+      },
+      {
+        "source": "국민",
+        "target": "정치",
+        "weight": 24
+      },
+      {
+        "source": "국민",
+        "target": "생각",
+        "weight": 24
+      },
+      {
+        "source": "국민",
+        "target": "인간",
+        "weight": 23
+      },
+      {
+        "source": "대통령",
+        "target": "생각",
+        "weight": 23
+      },
+      {
+        "source": "대표",
+        "target": "투자",
+        "weight": 23
+      },
+      {
+        "source": "대통령",
+        "target": "시장",
+        "weight": 22
+      },
+      {
+        "source": "대통령",
+        "target": "정치",
+        "weight": 22
+      },
+      {
+        "source": "국민",
+        "target": "사람",
+        "weight": 22
+      },
+      {
+        "source": "나라",
+        "target": "이재명",
+        "weight": 22
+      },
+      {
+        "source": "시장",
+        "target": "투자",
+        "weight": 22
+      },
+      {
+        "source": "주가",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "사람",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "대한민국",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "주가",
+        "target": "주식",
+        "weight": 21
+      },
+      {
+        "source": "생각",
+        "target": "투자",
+        "weight": 21
+      },
+      {
+        "source": "국민",
+        "target": "주식",
+        "weight": 21
+      },
+      {
+        "source": "경제",
+        "target": "대통령",
+        "weight": 20
+      },
+      {
+        "source": "생각",
+        "target": "이재명",
+        "weight": 20
+      },
+      {
+        "source": "나라",
+        "target": "정치",
+        "weight": 19
+      },
+      {
+        "source": "경제",
+        "target": "시장",
+        "weight": 18
+      },
+      {
+        "source": "대한민국",
+        "target": "주식",
+        "weight": 18
+      },
+      {
+        "source": "경제",
+        "target": "나라",
+        "weight": 18
+      },
+      {
+        "source": "인간",
+        "target": "정치",
+        "weight": 18
+      },
+      {
+        "source": "나라",
+        "target": "대한민국",
+        "weight": 18
+      },
+      {
+        "source": "생각",
+        "target": "인간",
+        "weight": 17
+      },
+      {
+        "source": "나라",
+        "target": "주가",
+        "weight": 17
+      },
+      {
+        "source": "시대",
+        "target": "이재명",
+        "weight": 16
+      },
+      {
+        "source": "나라",
+        "target": "이준석",
+        "weight": 16
+      },
+      {
+        "source": "이재명",
+        "target": "정치",
+        "weight": 16
+      },
+      {
+        "source": "감사",
+        "target": "생각",
+        "weight": 16
+      },
+      {
+        "source": "국민",
+        "target": "의원",
+        "weight": 16
+      },
+      {
+        "source": "대한민국",
+        "target": "사람",
+        "weight": 16
+      },
+      {
+        "source": "나라",
+        "target": "시장",
+        "weight": 16
+      },
+      {
+        "source": "시장",
+        "target": "이재명",
+        "weight": 15
+      },
+      {
+        "source": "대통령",
+        "target": "시대",
+        "weight": 15
+      },
+      {
+        "source": "나라",
+        "target": "의원",
+        "weight": 15
+      },
+      {
+        "source": "대통령",
+        "target": "의원",
+        "weight": 15
+      },
+      {
+        "source": "정치",
+        "target": "주식",
+        "weight": 15
+      }
+    ],
+    "density": 0.9105263157894737
+  },
+  "1": {
+    "label": "코스피 6000",
+    "nodes": [
+      {
+        "id": "코스피",
+        "freq": 889,
+        "community": 0
+      },
+      {
+        "id": "주식",
+        "freq": 628,
+        "community": 0
+      },
+      {
+        "id": "국민",
+        "freq": 368,
+        "community": 1
+      },
+      {
+        "id": "나라",
+        "freq": 354,
+        "community": 1
+      },
+      {
+        "id": "대통령",
+        "freq": 350,
+        "community": 1
+      },
+      {
+        "id": "이재명",
+        "freq": 338,
+        "community": 1
+      },
+      {
+        "id": "사람",
+        "freq": 261,
+        "community": 2
+      },
+      {
+        "id": "돌파",
+        "freq": 212,
+        "community": 0
+      },
+      {
+        "id": "투자",
+        "freq": 204,
+        "community": 2
+      },
+      {
+        "id": "경제",
+        "freq": 181,
+        "community": 3
+      },
+      {
+        "id": "시대",
+        "freq": 179,
+        "community": 0
+      },
+      {
+        "id": "감사",
+        "freq": 167,
+        "community": 4
+      },
+      {
+        "id": "생각",
+        "freq": 160,
+        "community": 2
+      },
+      {
+        "id": "주가",
+        "freq": 157,
+        "community": 3
+      },
+      {
+        "id": "시장",
+        "freq": 152,
+        "community": 3
+      },
+      {
+        "id": "대한민국",
+        "freq": 147,
+        "community": 5
+      },
+      {
+        "id": "정부",
+        "freq": 128,
+        "community": 5
+      },
+      {
+        "id": "기업",
+        "freq": 120,
+        "community": 3
+      },
+      {
+        "id": "정치",
+        "freq": 115,
+        "community": 2
+      },
+      {
+        "id": "수익",
+        "freq": 114,
+        "community": 4
+      }
+    ],
+    "edges": [
+      {
+        "source": "대통령",
+        "target": "이재명",
+        "weight": 125
+      },
+      {
+        "source": "돌파",
+        "target": "코스피",
+        "weight": 98
+      },
+      {
+        "source": "시대",
+        "target": "코스피",
+        "weight": 73
+      },
+      {
+        "source": "주식",
+        "target": "투자",
+        "weight": 69
+      },
+      {
+        "source": "시장",
+        "target": "주식",
+        "weight": 68
+      },
+      {
+        "source": "이재명",
+        "target": "주식",
+        "weight": 47
+      },
+      {
+        "source": "국민",
+        "target": "나라",
+        "weight": 46
+      },
+      {
+        "source": "국민",
+        "target": "주식",
+        "weight": 42
+      },
+      {
+        "source": "주식",
+        "target": "코스피",
+        "weight": 41
+      },
+      {
+        "source": "이재명",
+        "target": "코스피",
+        "weight": 40
+      },
+      {
+        "source": "수익",
+        "target": "주식",
+        "weight": 38
+      },
+      {
+        "source": "주가",
+        "target": "주식",
+        "weight": 36
+      },
+      {
+        "source": "경제",
+        "target": "코스피",
+        "weight": 35
+      },
+      {
+        "source": "대통령",
+        "target": "주식",
+        "weight": 35
+      },
+      {
+        "source": "사람",
+        "target": "주식",
+        "weight": 35
+      },
+      {
+        "source": "나라",
+        "target": "대통령",
+        "weight": 35
+      },
+      {
+        "source": "대통령",
+        "target": "코스피",
+        "weight": 34
+      },
+      {
+        "source": "국민",
+        "target": "코스피",
+        "weight": 34
+      },
+      {
+        "source": "나라",
+        "target": "코스피",
+        "weight": 33
+      },
+      {
+        "source": "국민",
+        "target": "대통령",
+        "weight": 32
+      },
+      {
+        "source": "국민",
+        "target": "이재명",
+        "weight": 31
+      },
+      {
+        "source": "대통령",
+        "target": "대한민국",
+        "weight": 31
+      },
+      {
+        "source": "이재명",
+        "target": "정부",
+        "weight": 29
+      },
+      {
+        "source": "생각",
+        "target": "주식",
+        "weight": 29
+      },
+      {
+        "source": "국민",
+        "target": "대한민국",
+        "weight": 28
+      },
+      {
+        "source": "나라",
+        "target": "주식",
+        "weight": 28
+      },
+      {
+        "source": "정부",
+        "target": "주식",
+        "weight": 27
+      },
+      {
+        "source": "국민",
+        "target": "정부",
+        "weight": 24
+      },
+      {
+        "source": "대한민국",
+        "target": "이재명",
+        "weight": 22
+      },
+      {
+        "source": "나라",
+        "target": "이재명",
+        "weight": 22
+      },
+      {
+        "source": "주가",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "기업",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "기업",
+        "target": "주식",
+        "weight": 20
+      },
+      {
+        "source": "나라",
+        "target": "대한민국",
+        "weight": 20
+      },
+      {
+        "source": "대통령",
+        "target": "사람",
+        "weight": 20
+      },
+      {
+        "source": "코스피",
+        "target": "투자",
+        "weight": 19
+      },
+      {
+        "source": "나라",
+        "target": "사람",
+        "weight": 19
+      },
+      {
+        "source": "국민",
+        "target": "생각",
+        "weight": 19
+      },
+      {
+        "source": "수익",
+        "target": "코스피",
+        "weight": 18
+      },
+      {
+        "source": "국민",
+        "target": "사람",
+        "weight": 18
+      },
+      {
+        "source": "사람",
+        "target": "생각",
+        "weight": 18
+      },
+      {
+        "source": "정부",
+        "target": "코스피",
+        "weight": 17
+      },
+      {
+        "source": "감사",
+        "target": "주식",
+        "weight": 17
+      },
+      {
+        "source": "시장",
+        "target": "투자",
+        "weight": 17
+      },
+      {
+        "source": "나라",
+        "target": "생각",
+        "weight": 17
+      },
+      {
+        "source": "경제",
+        "target": "주식",
+        "weight": 16
+      },
+      {
+        "source": "국민",
+        "target": "정치",
+        "weight": 15
+      },
+      {
+        "source": "기업",
+        "target": "나라",
+        "weight": 15
+      },
+      {
+        "source": "생각",
+        "target": "코스피",
+        "weight": 15
+      },
+      {
+        "source": "사람",
+        "target": "정치",
+        "weight": 15
+      },
+      {
+        "source": "경제",
+        "target": "나라",
+        "weight": 15
+      },
+      {
+        "source": "경제",
+        "target": "투자",
+        "weight": 14
+      },
+      {
+        "source": "시장",
+        "target": "코스피",
+        "weight": 14
+      },
+      {
+        "source": "생각",
+        "target": "투자",
+        "weight": 14
+      },
+      {
+        "source": "기업",
+        "target": "정부",
+        "weight": 14
+      },
+      {
+        "source": "수익",
+        "target": "투자",
+        "weight": 14
+      },
+      {
+        "source": "감사",
+        "target": "대통령",
+        "weight": 14
+      },
+      {
+        "source": "국민",
+        "target": "주가",
+        "weight": 14
+      },
+      {
+        "source": "주가",
+        "target": "투자",
+        "weight": 14
+      },
+      {
+        "source": "생각",
+        "target": "이재명",
+        "weight": 14
+      },
+      {
+        "source": "대통령",
+        "target": "정부",
+        "weight": 14
+      },
+      {
+        "source": "돌파",
+        "target": "시대",
+        "weight": 13
+      },
+      {
+        "source": "경제",
+        "target": "정치",
+        "weight": 13
+      },
+      {
+        "source": "나라",
+        "target": "투자",
+        "weight": 13
+      },
+      {
+        "source": "기업",
+        "target": "투자",
+        "weight": 13
+      },
+      {
+        "source": "감사",
+        "target": "수익",
+        "weight": 13
+      },
+      {
+        "source": "경제",
+        "target": "시장",
+        "weight": 13
+      },
+      {
+        "source": "사람",
+        "target": "이재명",
+        "weight": 13
+      },
+      {
+        "source": "대통령",
+        "target": "생각",
+        "weight": 13
+      },
+      {
+        "source": "경제",
+        "target": "주가",
+        "weight": 13
+      },
+      {
+        "source": "경제",
+        "target": "국민",
+        "weight": 12
+      },
+      {
+        "source": "대통령",
+        "target": "투자",
+        "weight": 12
+      },
+      {
+        "source": "대통령",
+        "target": "시장",
+        "weight": 12
+      },
+      {
+        "source": "사람",
+        "target": "투자",
+        "weight": 12
+      },
+      {
+        "source": "대한민국",
+        "target": "주식",
+        "weight": 12
+      },
+      {
+        "source": "대한민국",
+        "target": "코스피",
+        "weight": 12
+      },
+      {
+        "source": "경제",
+        "target": "돌파",
+        "weight": 11
+      },
+      {
+        "source": "감사",
+        "target": "이재명",
+        "weight": 11
+      },
+      {
+        "source": "경제",
+        "target": "대통령",
+        "weight": 11
+      },
+      {
+        "source": "기업",
+        "target": "시장",
+        "weight": 11
+      }
+    ],
+    "density": 0.8526315789473684
+  },
+  "2": {
+    "label": "코스피 7000",
+    "nodes": [
+      {
+        "id": "코스피",
+        "freq": 768,
+        "community": 0
+      },
+      {
+        "id": "주식",
+        "freq": 443,
+        "community": 0
+      },
+      {
+        "id": "감사",
+        "freq": 371,
+        "community": 1
+      },
+      {
+        "id": "대통령",
+        "freq": 321,
+        "community": 1
+      },
+      {
+        "id": "국민",
+        "freq": 319,
+        "community": 2
+      },
+      {
+        "id": "나라",
+        "freq": 269,
+        "community": 2
+      },
+      {
+        "id": "사람",
+        "freq": 261,
+        "community": 2
+      },
+      {
+        "id": "이재명",
+        "freq": 252,
+        "community": 1
+      },
+      {
+        "id": "연임",
+        "freq": 225,
+        "community": 2
+      },
+      {
+        "id": "돌파",
+        "freq": 194,
+        "community": 0
+      },
+      {
+        "id": "시대",
+        "freq": 172,
+        "community": 0
+      },
+      {
+        "id": "반도체",
+        "freq": 171,
+        "community": 3
+      },
+      {
+        "id": "투자",
+        "freq": 167,
+        "community": 4
+      },
+      {
+        "id": "생각",
+        "freq": 149,
+        "community": 4
+      },
+      {
+        "id": "경제",
+        "freq": 147,
+        "community": 3
+      },
+      {
+        "id": "최고",
+        "freq": 136,
+        "community": 3
+      },
+      {
+        "id": "조국",
+        "freq": 135,
+        "community": 5
+      },
+      {
+        "id": "방송",
+        "freq": 134,
+        "community": 1
+      },
+      {
+        "id": "시장",
+        "freq": 124,
+        "community": 3
+      },
+      {
+        "id": "공매도",
+        "freq": 115,
+        "community": 6
+      }
+    ],
+    "edges": [
+      {
+        "source": "대통령",
+        "target": "이재명",
+        "weight": 109
+      },
+      {
+        "source": "돌파",
+        "target": "코스피",
+        "weight": 97
+      },
+      {
+        "source": "시대",
+        "target": "코스피",
+        "weight": 72
+      },
+      {
+        "source": "대통령",
+        "target": "연임",
+        "weight": 53
+      },
+      {
+        "source": "주식",
+        "target": "투자",
+        "weight": 48
+      },
+      {
+        "source": "시장",
+        "target": "주식",
+        "weight": 43
+      },
+      {
+        "source": "국민",
+        "target": "나라",
+        "weight": 41
+      },
+      {
+        "source": "연임",
+        "target": "이재명",
+        "weight": 40
+      },
+      {
+        "source": "국민",
+        "target": "대통령",
+        "weight": 40
+      },
+      {
+        "source": "주식",
+        "target": "코스피",
+        "weight": 36
+      },
+      {
+        "source": "반도체",
+        "target": "코스피",
+        "weight": 35
+      },
+      {
+        "source": "사람",
+        "target": "주식",
+        "weight": 35
+      },
+      {
+        "source": "감사",
+        "target": "방송",
+        "weight": 31
+      },
+      {
+        "source": "감사",
+        "target": "대통령",
+        "weight": 29
+      },
+      {
+        "source": "나라",
+        "target": "대통령",
+        "weight": 28
+      },
+      {
+        "source": "감사",
+        "target": "주식",
+        "weight": 28
+      },
+      {
+        "source": "경제",
+        "target": "코스피",
+        "weight": 27
+      },
+      {
+        "source": "최고",
+        "target": "코스피",
+        "weight": 26
+      },
+      {
+        "source": "국민",
+        "target": "이재명",
+        "weight": 26
+      },
+      {
+        "source": "나라",
+        "target": "주식",
+        "weight": 23
+      },
+      {
+        "source": "대통령",
+        "target": "최고",
+        "weight": 23
+      },
+      {
+        "source": "대통령",
+        "target": "코스피",
+        "weight": 22
+      },
+      {
+        "source": "경제",
+        "target": "주식",
+        "weight": 22
+      },
+      {
+        "source": "대통령",
+        "target": "사람",
+        "weight": 20
+      },
+      {
+        "source": "국민",
+        "target": "연임",
+        "weight": 20
+      },
+      {
+        "source": "국민",
+        "target": "사람",
+        "weight": 20
+      },
+      {
+        "source": "나라",
+        "target": "사람",
+        "weight": 20
+      },
+      {
+        "source": "국민",
+        "target": "주식",
+        "weight": 19
+      },
+      {
+        "source": "감사",
+        "target": "이재명",
+        "weight": 18
+      },
+      {
+        "source": "나라",
+        "target": "이재명",
+        "weight": 17
+      },
+      {
+        "source": "이재명",
+        "target": "주식",
+        "weight": 16
+      },
+      {
+        "source": "대통령",
+        "target": "주식",
+        "weight": 16
+      },
+      {
+        "source": "방송",
+        "target": "주식",
+        "weight": 16
+      },
+      {
+        "source": "국민",
+        "target": "코스피",
+        "weight": 16
+      },
+      {
+        "source": "감사",
+        "target": "투자",
+        "weight": 16
+      },
+      {
+        "source": "사람",
+        "target": "이재명",
+        "weight": 16
+      },
+      {
+        "source": "이재명",
+        "target": "최고",
+        "weight": 16
+      },
+      {
+        "source": "시대",
+        "target": "주식",
+        "weight": 15
+      },
+      {
+        "source": "코스피",
+        "target": "투자",
+        "weight": 15
+      },
+      {
+        "source": "사람",
+        "target": "코스피",
+        "weight": 15
+      },
+      {
+        "source": "감사",
+        "target": "국민",
+        "weight": 15
+      },
+      {
+        "source": "대통령",
+        "target": "생각",
+        "weight": 14
+      },
+      {
+        "source": "경제",
+        "target": "국민",
+        "weight": 14
+      },
+      {
+        "source": "이재명",
+        "target": "코스피",
+        "weight": 14
+      },
+      {
+        "source": "사람",
+        "target": "생각",
+        "weight": 14
+      },
+      {
+        "source": "생각",
+        "target": "주식",
+        "weight": 14
+      },
+      {
+        "source": "반도체",
+        "target": "주식",
+        "weight": 14
+      },
+      {
+        "source": "시장",
+        "target": "코스피",
+        "weight": 13
+      },
+      {
+        "source": "나라",
+        "target": "연임",
+        "weight": 13
+      },
+      {
+        "source": "나라",
+        "target": "생각",
+        "weight": 12
+      },
+      {
+        "source": "국민",
+        "target": "생각",
+        "weight": 12
+      },
+      {
+        "source": "감사",
+        "target": "코스피",
+        "weight": 11
+      },
+      {
+        "source": "생각",
+        "target": "이재명",
+        "weight": 11
+      },
+      {
+        "source": "감사",
+        "target": "최고",
+        "weight": 11
+      },
+      {
+        "source": "사람",
+        "target": "투자",
+        "weight": 11
+      },
+      {
+        "source": "돌파",
+        "target": "시대",
+        "weight": 10
+      },
+      {
+        "source": "경제",
+        "target": "방송",
+        "weight": 10
+      },
+      {
+        "source": "경제",
+        "target": "대통령",
+        "weight": 10
+      },
+      {
+        "source": "돌파",
+        "target": "최고",
+        "weight": 9
+      },
+      {
+        "source": "경제",
+        "target": "돌파",
+        "weight": 9
+      },
+      {
+        "source": "대통령",
+        "target": "조국",
+        "weight": 9
+      },
+      {
+        "source": "경제",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "방송",
+        "target": "사람",
+        "weight": 9
+      },
+      {
+        "source": "생각",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "경제",
+        "target": "사람",
+        "weight": 9
+      },
+      {
+        "source": "공매도",
+        "target": "주식",
+        "weight": 9
+      },
+      {
+        "source": "공매도",
+        "target": "코스피",
+        "weight": 8
+      },
+      {
+        "source": "경제",
+        "target": "시대",
+        "weight": 8
+      },
+      {
+        "source": "경제",
+        "target": "나라",
+        "weight": 8
+      },
+      {
+        "source": "시장",
+        "target": "투자",
+        "weight": 8
+      },
+      {
+        "source": "국민",
+        "target": "방송",
+        "weight": 8
+      },
+      {
+        "source": "생각",
+        "target": "코스피",
+        "weight": 8
+      },
+      {
+        "source": "국민",
+        "target": "투자",
+        "weight": 8
+      },
+      {
+        "source": "이재명",
+        "target": "조국",
+        "weight": 8
+      },
+      {
+        "source": "감사",
+        "target": "사람",
+        "weight": 8
+      },
+      {
+        "source": "나라",
+        "target": "코스피",
+        "weight": 8
+      },
+      {
+        "source": "공매도",
+        "target": "시장",
+        "weight": 8
+      },
+      {
+        "source": "돌파",
+        "target": "반도체",
+        "weight": 7
+      },
+      {
+        "source": "감사",
+        "target": "경제",
+        "weight": 7
+      },
+      {
+        "source": "생각",
+        "target": "조국",
+        "weight": 7
+      }
+    ],
+    "density": 0.7157894736842105
+  },
+  "3": {
+    "label": "코스피 8000",
+    "nodes": [
+      {
+        "id": "코스피",
+        "freq": 635,
+        "community": 0
+      },
+      {
+        "id": "감사",
+        "freq": 469,
+        "community": 1
+      },
+      {
+        "id": "주식",
+        "freq": 326,
+        "community": 1
+      },
+      {
+        "id": "매도",
+        "freq": 154,
+        "community": 0
+      },
+      {
+        "id": "급락",
+        "freq": 138,
+        "community": 0
+      },
+      {
+        "id": "국민",
+        "freq": 135,
+        "community": 2
+      },
+      {
+        "id": "영상",
+        "freq": 135,
+        "community": 1
+      },
+      {
+        "id": "오늘",
+        "freq": 126,
+        "community": 1
+      },
+      {
+        "id": "돌파",
+        "freq": 125,
+        "community": 0
+      },
+      {
+        "id": "반도체",
+        "freq": 125,
+        "community": 3
+      },
+      {
+        "id": "조정",
+        "freq": 124,
+        "community": 3
+      },
+      {
+        "id": "시장",
+        "freq": 122,
+        "community": 3
+      },
+      {
+        "id": "투자",
+        "freq": 117,
+        "community": 2
+      },
+      {
+        "id": "경제",
+        "freq": 112,
+        "community": 2
+      },
+      {
+        "id": "사람",
+        "freq": 109,
+        "community": 4
+      },
+      {
+        "id": "외국인",
+        "freq": 108,
+        "community": 3
+      },
+      {
+        "id": "생각",
+        "freq": 106,
+        "community": 2
+      },
+      {
+        "id": "수익",
+        "freq": 101,
+        "community": 4
+      },
+      {
+        "id": "개미",
+        "freq": 99,
+        "community": 5
+      },
+      {
+        "id": "하락",
+        "freq": 98,
+        "community": 6
+      }
+    ],
+    "edges": [
+      {
+        "source": "돌파",
+        "target": "코스피",
+        "weight": 60
+      },
+      {
+        "source": "감사",
+        "target": "오늘",
+        "weight": 55
+      },
+      {
+        "source": "급락",
+        "target": "코스피",
+        "weight": 54
+      },
+      {
+        "source": "감사",
+        "target": "영상",
+        "weight": 40
+      },
+      {
+        "source": "시장",
+        "target": "주식",
+        "weight": 37
+      },
+      {
+        "source": "매도",
+        "target": "외국인",
+        "weight": 33
+      },
+      {
+        "source": "주식",
+        "target": "투자",
+        "weight": 33
+      },
+      {
+        "source": "감사",
+        "target": "주식",
+        "weight": 32
+      },
+      {
+        "source": "매도",
+        "target": "코스피",
+        "weight": 24
+      },
+      {
+        "source": "개미",
+        "target": "코스피",
+        "weight": 23
+      },
+      {
+        "source": "수익",
+        "target": "주식",
+        "weight": 23
+      },
+      {
+        "source": "코스피",
+        "target": "하락",
+        "weight": 22
+      },
+      {
+        "source": "외국인",
+        "target": "코스피",
+        "weight": 21
+      },
+      {
+        "source": "경제",
+        "target": "주식",
+        "weight": 20
+      },
+      {
+        "source": "경제",
+        "target": "코스피",
+        "weight": 19
+      },
+      {
+        "source": "반도체",
+        "target": "코스피",
+        "weight": 19
+      },
+      {
+        "source": "매도",
+        "target": "주식",
+        "weight": 18
+      },
+      {
+        "source": "외국인",
+        "target": "주식",
+        "weight": 17
+      },
+      {
+        "source": "국민",
+        "target": "코스피",
+        "weight": 16
+      },
+      {
+        "source": "급락",
+        "target": "매도",
+        "weight": 16
+      },
+      {
+        "source": "주식",
+        "target": "코스피",
+        "weight": 14
+      },
+      {
+        "source": "개미",
+        "target": "외국인",
+        "weight": 14
+      },
+      {
+        "source": "매도",
+        "target": "수익",
+        "weight": 14
+      },
+      {
+        "source": "시장",
+        "target": "코스피",
+        "weight": 13
+      },
+      {
+        "source": "급락",
+        "target": "돌파",
+        "weight": 13
+      },
+      {
+        "source": "수익",
+        "target": "시장",
+        "weight": 13
+      },
+      {
+        "source": "수익",
+        "target": "투자",
+        "weight": 13
+      },
+      {
+        "source": "사람",
+        "target": "주식",
+        "weight": 13
+      },
+      {
+        "source": "국민",
+        "target": "주식",
+        "weight": 13
+      },
+      {
+        "source": "매도",
+        "target": "시장",
+        "weight": 13
+      },
+      {
+        "source": "코스피",
+        "target": "투자",
+        "weight": 12
+      },
+      {
+        "source": "시장",
+        "target": "투자",
+        "weight": 12
+      },
+      {
+        "source": "조정",
+        "target": "주식",
+        "weight": 12
+      },
+      {
+        "source": "시장",
+        "target": "외국인",
+        "weight": 12
+      },
+      {
+        "source": "생각",
+        "target": "주식",
+        "weight": 12
+      },
+      {
+        "source": "오늘",
+        "target": "주식",
+        "weight": 11
+      },
+      {
+        "source": "개미",
+        "target": "매도",
+        "weight": 11
+      },
+      {
+        "source": "조정",
+        "target": "코스피",
+        "weight": 10
+      },
+      {
+        "source": "매도",
+        "target": "하락",
+        "weight": 10
+      },
+      {
+        "source": "수익",
+        "target": "조정",
+        "weight": 10
+      },
+      {
+        "source": "영상",
+        "target": "오늘",
+        "weight": 10
+      },
+      {
+        "source": "국민",
+        "target": "생각",
+        "weight": 10
+      },
+      {
+        "source": "국민",
+        "target": "매도",
+        "weight": 9
+      },
+      {
+        "source": "경제",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "반도체",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "반도체",
+        "target": "조정",
+        "weight": 9
+      },
+      {
+        "source": "사람",
+        "target": "생각",
+        "weight": 9
+      },
+      {
+        "source": "사람",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "매도",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "생각",
+        "target": "조정",
+        "weight": 9
+      },
+      {
+        "source": "외국인",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "감사",
+        "target": "경제",
+        "weight": 9
+      },
+      {
+        "source": "경제",
+        "target": "국민",
+        "weight": 9
+      },
+      {
+        "source": "감사",
+        "target": "투자",
+        "weight": 9
+      },
+      {
+        "source": "급락",
+        "target": "외국인",
+        "weight": 8
+      },
+      {
+        "source": "생각",
+        "target": "시장",
+        "weight": 8
+      },
+      {
+        "source": "생각",
+        "target": "투자",
+        "weight": 8
+      },
+      {
+        "source": "국민",
+        "target": "투자",
+        "weight": 8
+      },
+      {
+        "source": "감사",
+        "target": "조정",
+        "weight": 8
+      },
+      {
+        "source": "감사",
+        "target": "생각",
+        "weight": 8
+      },
+      {
+        "source": "반도체",
+        "target": "시장",
+        "weight": 8
+      },
+      {
+        "source": "수익",
+        "target": "외국인",
+        "weight": 8
+      },
+      {
+        "source": "개미",
+        "target": "주식",
+        "weight": 8
+      },
+      {
+        "source": "반도체",
+        "target": "외국인",
+        "weight": 7
+      },
+      {
+        "source": "오늘",
+        "target": "코스피",
+        "weight": 7
+      },
+      {
+        "source": "급락",
+        "target": "시장",
+        "weight": 7
+      },
+      {
+        "source": "사람",
+        "target": "수익",
+        "weight": 7
+      },
+      {
+        "source": "생각",
+        "target": "수익",
+        "weight": 7
+      },
+      {
+        "source": "시장",
+        "target": "하락",
+        "weight": 7
+      },
+      {
+        "source": "경제",
+        "target": "조정",
+        "weight": 7
+      },
+      {
+        "source": "국민",
+        "target": "사람",
+        "weight": 7
+      },
+      {
+        "source": "경제",
+        "target": "시장",
+        "weight": 7
+      },
+      {
+        "source": "반도체",
+        "target": "수익",
+        "weight": 7
+      },
+      {
+        "source": "반도체",
+        "target": "주식",
+        "weight": 7
+      },
+      {
+        "source": "국민",
+        "target": "외국인",
+        "weight": 6
+      },
+      {
+        "source": "수익",
+        "target": "코스피",
+        "weight": 6
+      },
+      {
+        "source": "국민",
+        "target": "하락",
+        "weight": 6
+      },
+      {
+        "source": "돌파",
+        "target": "매도",
+        "weight": 6
+      },
+      {
+        "source": "돌파",
+        "target": "외국인",
+        "weight": 6
+      },
+      {
+        "source": "반도체",
+        "target": "오늘",
+        "weight": 6
+      }
+    ],
+    "density": 0.8
+  }
+}

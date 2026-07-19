@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#fff; font-family:'Apple SD Gothic Neo',sans-serif; }
+.networks { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:4px; width:2400px; height:600px; }
+.net-box { position:relative; border:1px solid #e2e8f0; background:#f8fafc; }
+.net-title { position:absolute; top:6px; left:10px; font-size:14px; font-weight:700; color:#1e293b; z-index:10; }
+.net-info { position:absolute; bottom:4px; left:10px; font-size:10px; color:#64748b; z-index:10; }
+#barchart { display:none; }
+</style>
+</head><body>
+<div class="networks" id="networks"></div>
+<div id="barchart"></div>
+<div style="display:flex;gap:4px;width:2400px;height:500px;">
+  <div id="chart4" style="width:1198px;height:500px;background:#fff;border:1px solid #e2e8f0;"></div>
+  <div id="chart5" style="width:1198px;height:500px;background:#fff;border:1px solid #e2e8f0;"></div>
+</div>
+<script>
+const DATA = SNADATAPLACHOLDER;
+const COLORS = ['#4F46E5','#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899'];
+const GROUPS = Object.keys(DATA);
+
+// Draw 4 networks
+GROUPS.forEach((gk,gi) => {
+  const g = DATA[gk];
+  const box = document.createElement('div');
+  box.className = 'net-box';
+  box.innerHTML = '<div class="net-title">'+g.label+'</div>';
+  document.getElementById('networks').appendChild(box);
+
+  const W=598, H=600;
+  const svg = d3.select(box).append('svg').attr('width',W).attr('height',H);
+  const gr = svg.append('g');
+
+  const nodes = g.nodes.map(n=>({...n}));
+  const edges = g.edges.map(e=>({...e}));
+  const maxFreq = Math.max(...nodes.map(n=>n.freq),1);
+  const maxW = Math.max(...edges.map(e=>e.weight),1);
+  const nodeR = n => Math.max(5, Math.sqrt(n.freq/maxFreq)*25);
+
+  const comms = [...new Set(nodes.map(n=>n.community))];
+  const colorMap = {}; comms.forEach((c,i)=>colorMap[c]=COLORS[i%COLORS.length]);
+
+  // Modularity calculation
+  const m2 = edges.reduce((s,e)=>s+e.weight,0);
+  const ki = {};
+  nodes.forEach(n=>ki[n.id]=0);
+  edges.forEach(e=>{ki[e.source]=(ki[e.source]||0)+e.weight; ki[e.target]=(ki[e.target]||0)+e.weight;});
+  let Q=0;
+  edges.forEach(e=>{
+    const si=nodes.find(n=>n.id===e.source)?.community;
+    const ti=nodes.find(n=>n.id===e.target)?.community;
+    if(si===ti) Q += e.weight - (ki[e.source]*ki[e.target])/(2*m2);
+  });
+  Q = m2>0 ? Q/(2*m2) : 0;
+
+  const pad = 60;
+  // 군집별 초기 위치
+  const commCenters = {};
+  let ci = 0;
+  nodes.forEach(n => {
+    if (!(n.community in commCenters)) {
+      const a = (ci / comms.length) * 2 * Math.PI - Math.PI/2;
+      const r = Math.min(W, H) * 0.22;
+      commCenters[n.community] = { x: W/2 + r*Math.cos(a), y: H/2 + r*Math.sin(a) };
+      ci++;
+    }
+    n.x = commCenters[n.community].x + (Math.random()-0.5)*30;
+    n.y = commCenters[n.community].y + (Math.random()-0.5)*30;
+  });
+
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(d=>d.id).strength(0.08).distance(30))
+    .force('charge', d3.forceManyBody().strength(-60))
+    .force('collision', d3.forceCollide(d=>nodeR(d)+4))
+    .force('cluster', alpha => {
+      nodes.forEach(n => {
+        const c = commCenters[n.community];
+        n.vx += (c.x - n.x) * alpha * 0.3;
+        n.vy += (c.y - n.y) * alpha * 0.3;
+      });
+    })
+    .force('bounds', () => {
+      nodes.forEach(n => {
+        const r = nodeR(n);
+        n.x = Math.max(pad+r, Math.min(W-pad-r, n.x));
+        n.y = Math.max(pad+r, Math.min(H-pad-r, n.y));
+      });
+    });
+
+  const link = gr.append('g').selectAll('line').data(edges).enter().append('line')
+    .attr('stroke','#94a3b8').attr('stroke-width',d=>Math.sqrt(d.weight/maxW)*3+0.5).attr('stroke-opacity',0.35);
+  const nodeG = gr.append('g').selectAll('g').data(nodes).enter().append('g');
+  nodeG.append('circle').attr('r',nodeR).attr('fill',d=>colorMap[d.community]).attr('stroke','#fff').attr('stroke-width',1.5).attr('opacity',0.85);
+  nodeG.append('text').text(d=>d.id)
+    .attr('text-anchor','middle').attr('dy','.4em')
+    .attr('fill','#111').attr('font-size','13px').attr('font-weight',700)
+    .attr('pointer-events','none');
+
+  sim.on('tick',()=>{
+    link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+    nodeG.attr('transform',d=>'translate('+d.x+','+d.y+')');
+  });
+
+  // Info
+  const info = document.createElement('div');
+  info.className = 'net-info';
+  info.textContent = 'Nodes:'+nodes.length+' Edges:'+edges.length+' Communities:'+comms.length+' Modularity:'+Q.toFixed(3);
+  box.appendChild(info);
+});
+
+// Bar chart - Top 10 keywords across groups
+const allWords = new Map();
+GROUPS.forEach(gk => {
+  DATA[gk].nodes.forEach(n => {
+    allWords.set(n.id, (allWords.get(n.id)||0) + n.freq);
+  });
+});
+const top10 = [...allWords.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(d=>d[0]);
+const groupLabels = GROUPS.map(gk => DATA[gk].label);
+const GC = ['#4F46E5','#0EA5E9','#10B981','#F59E0B'];
+
+const cW=2400, cH=480, margin={top:40,right:30,bottom:50,left:60};
+const iW=cW-margin.left-margin.right, iH=cH-margin.top-margin.bottom;
+const csvg = d3.select('#barchart').append('svg').attr('width',cW).attr('height',cH);
+const cg = csvg.append('g').attr('transform','translate('+margin.left+','+margin.top+')');
+
+const x0 = d3.scaleBand().domain(top10).range([0,iW]).padding(0.25);
+const x1 = d3.scaleBand().domain(groupLabels).range([0,x0.bandwidth()]).padding(0.08);
+const maxVal = Math.max(...top10.flatMap(w=>GROUPS.map(gk=>{const n=DATA[gk].nodes.find(n=>n.id===w);return n?n.freq:0})));
+const y = d3.scaleLinear().domain([0,maxVal*1.1]).range([iH,0]);
+
+cg.append('g').attr('transform','translate(0,'+iH+')').call(d3.axisBottom(x0)).selectAll('text').attr('font-size','13px').attr('font-weight',600);
+cg.append('g').call(d3.axisLeft(y).ticks(6)).selectAll('text').attr('font-size','11px');
+
+top10.forEach(w => {
+  groupLabels.forEach((gl,gi) => {
+    const gk=GROUPS[gi];
+    const n=DATA[gk].nodes.find(n=>n.id===w);
+    const val=n?n.freq:0;
+    cg.append('rect').attr('x',x0(w)+x1(gl)).attr('y',y(val)).attr('width',x1.bandwidth()).attr('height',iH-y(val)).attr('fill',GC[gi]).attr('rx',2);
+    if(val>0) cg.append('text').attr('x',x0(w)+x1(gl)+x1.bandwidth()/2).attr('y',y(val)-4).attr('text-anchor','middle').attr('font-size','9px').attr('fill','#475569').text(val);
+  });
+});
+
+// Legend
+const leg = csvg.append('g').attr('transform','translate('+(cW-400)+',10)');
+groupLabels.forEach((gl,i) => {
+  leg.append('rect').attr('x',i*95).attr('y',0).attr('width',12).attr('height',12).attr('fill',GC[i]).attr('rx',2);
+  leg.append('text').attr('x',i*95+16).attr('y',10).text(gl).attr('font-size','11px').attr('fill','#334155').attr('font-weight',600);
+});
+
+// Title
+csvg.append('text').attr('x',margin.left).attr('y',28).text('그룹별 Top 10 키워드 빈도 비교').attr('font-size','15px').attr('font-weight',700).attr('fill','#1e293b');
+
+// ── 그림 4: 키워드 3그룹 빈도 변화 (막대 그래프) ──
+{
+  const cW=1198, cH=500, mg={top:45,right:30,bottom:55,left:65};
+  const iW=cW-mg.left-mg.right, iH=cH-mg.top-mg.bottom;
+  const labels4=['5000','6000','7000','8000'];
+  const datasets=[
+    {label:'정치 키워드',data:[1394,1032,884,115],color:'#818cf8'},
+    {label:'경제 키워드',data:[1073,1056,1137,1104],color:'#22c55e'},
+    {label:'공포 키워드',data:[180,207,132,515],color:'#ef4444'},
+  ];
+  const svg4=d3.select('#chart4').append('svg').attr('width',cW).attr('height',cH);
+  const g4=svg4.append('g').attr('transform','translate('+mg.left+','+mg.top+')');
+
+  const x0=d3.scaleBand().domain(labels4).range([0,iW]).padding(0.3);
+  const x1=d3.scaleBand().domain(datasets.map(d=>d.label)).range([0,x0.bandwidth()]).padding(0.1);
+  const maxVal=Math.max(...datasets.flatMap(d=>d.data));
+  const y=d3.scaleLinear().domain([0,maxVal*1.15]).range([iH,0]);
+
+  g4.append('g').attr('transform','translate(0,'+iH+')').call(d3.axisBottom(x0)).selectAll('text').attr('font-size','14px').attr('font-weight',700);
+  g4.append('g').call(d3.axisLeft(y).ticks(6)).selectAll('text').attr('font-size','12px');
+
+  labels4.forEach(l=>{
+    datasets.forEach(ds=>{
+      const val=ds.data[labels4.indexOf(l)];
+      g4.append('rect').attr('x',x0(l)+x1(ds.label)).attr('y',y(val)).attr('width',x1.bandwidth()).attr('height',iH-y(val)).attr('fill',ds.color).attr('rx',3).attr('opacity',0.85);
+      g4.append('text').attr('x',x0(l)+x1(ds.label)+x1.bandwidth()/2).attr('y',y(val)-6).attr('text-anchor','middle').attr('font-size','11px').attr('fill','#334155').attr('font-weight',600).text(val.toLocaleString());
+    });
+  });
+
+  // Legend
+  const leg4=svg4.append('g').attr('transform','translate('+(cW-380)+',12)');
+  datasets.forEach((ds,i)=>{
+    leg4.append('rect').attr('x',i*125).attr('y',0).attr('width',14).attr('height',14).attr('fill',ds.color).attr('rx',3);
+    leg4.append('text').attr('x',i*125+18).attr('y',11).text(ds.label).attr('font-size','12px').attr('fill','#334155').attr('font-weight',600);
+  });
+  svg4.append('text').attr('x',mg.left).attr('y',32).text('그림 4. 키워드 3그룹 빈도 변화 — 정치 · 경제 · 공포').attr('font-size','15px').attr('font-weight',700).attr('fill','#1e293b');
+}
+
+// ── 그림 5: 네트워크 밀도 변화 (라인 차트) ──
+{
+  const cW=1198, cH=500, mg={top:45,right:50,bottom:55,left:65};
+  const iW=cW-mg.left-mg.right, iH=cH-mg.top-mg.bottom;
+  const labels5=['5000','6000','7000','8000'];
+  const densityData=[0.727,0.694,0.627,0.699];
+  const dotColors=['#6366f1','#6366f1','#f59e0b','#ef4444'];
+
+  const svg5=d3.select('#chart5').append('svg').attr('width',cW).attr('height',cH);
+  const g5=svg5.append('g').attr('transform','translate('+mg.left+','+mg.top+')');
+
+  const x=d3.scalePoint().domain(labels5).range([0,iW]).padding(0.3);
+  const y=d3.scaleLinear().domain([0.5,0.8]).range([iH,0]);
+
+  g5.append('g').attr('transform','translate(0,'+iH+')').call(d3.axisBottom(x)).selectAll('text').attr('font-size','14px').attr('font-weight',700);
+  g5.append('g').call(d3.axisLeft(y).ticks(6).tickFormat(d3.format('.3f'))).selectAll('text').attr('font-size','12px');
+
+  // Grid lines
+  y.ticks(6).forEach(t=>{
+    g5.append('line').attr('x1',0).attr('x2',iW).attr('y1',y(t)).attr('y2',y(t)).attr('stroke','#e2e8f0').attr('stroke-dasharray','4,3');
+  });
+
+  // Area fill
+  const area=d3.area().x((d,i)=>x(labels5[i])).y0(iH).y1((d,i)=>y(d)).curve(d3.curveMonotoneX);
+  g5.append('path').datum(densityData).attr('d',area).attr('fill','#6366f120');
+
+  // Line
+  const line=d3.line().x((d,i)=>x(labels5[i])).y(d=>y(d)).curve(d3.curveMonotoneX);
+  g5.append('path').datum(densityData).attr('d',line).attr('fill','none').attr('stroke','#6366f1').attr('stroke-width',3);
+
+  // Dots + labels
+  densityData.forEach((d,i)=>{
+    g5.append('circle').attr('cx',x(labels5[i])).attr('cy',y(d)).attr('r',8).attr('fill',dotColors[i]).attr('stroke','#fff').attr('stroke-width',2);
+    g5.append('text').attr('x',x(labels5[i])).attr('y',y(d)-16).attr('text-anchor','middle').attr('font-size','14px').attr('font-weight',700).attr('fill',dotColors[i]).text(d.toFixed(3));
+  });
+
+  // Annotation for min
+  g5.append('text').attr('x',x('7000')+10).attr('y',y(0.627)+25).attr('font-size','11px').attr('fill','#f59e0b').attr('font-weight',600).text('담론 다변화 → 최저');
+  // Annotation for recovery
+  g5.append('text').attr('x',x('8000')+10).attr('y',y(0.699)+25).attr('font-size','11px').attr('fill','#ef4444').attr('font-weight',600).text('"급락·폭락" 수렴 → 재상승');
+
+  svg5.append('text').attr('x',mg.left).attr('y',32).text('그림 5. 네트워크 밀도 변화').attr('font-size','15px').attr('font-weight',700).attr('fill','#1e293b');
+}
+
+// Signal ready after simulation settles
+setTimeout(()=>{ window.__READY = true; }, 4000);
+</script>
+</body></html>

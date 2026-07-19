@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myDataAnalysis</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+.header{background:#1e293b;border-bottom:1px solid #334155;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:18px;font-weight:700;color:#f1f5f9}.logo span{color:#818cf8}
+.header-btns{display:flex;gap:8px}
+.h-btn{background:#334155;border:1px solid #475569;color:#94a3b8;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+.h-btn:hover{background:#475569;color:#e2e8f0}
+.steps-nav{display:flex;background:#1e293b;border-bottom:1px solid #334155;padding:0 24px;overflow-x:auto}
+.step-tab{padding:12px 20px;font-size:13px;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-weight:500}
+.step-tab:hover{color:#94a3b8}.step-tab.active{color:#818cf8;border-bottom-color:#818cf8}.step-tab.done{color:#22c55e}
+.main{max-width:1200px;margin:0 auto;padding:24px}
+.step-panel{display:none}.step-panel.active{display:block}
+.card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:#e2e8f0;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-desc{font-size:12px;color:#64748b;margin-bottom:16px;line-height:1.7}
+label{display:block;font-size:12px;color:#94a3b8;margin-bottom:4px;font-weight:500}
+input,textarea,select{width:100%;background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:8px 12px;border-radius:6px;font-size:13px;font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1}
+textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row-3{grid-template-columns:1fr 1fr 1fr}
+.form-group{margin-bottom:12px}
+.btn{padding:8px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:all .15s}
+.btn-primary{background:#6366f1;color:#fff;border-color:#6366f1}.btn-primary:hover{background:#4f46e5}.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:#22c55e;color:#fff;border-color:#22c55e}.btn-green:hover{background:#16a34a}.btn-green:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:transparent;border-color:#475569;color:#94a3b8}.btn-secondary:hover{background:#334155;color:#e2e8f0}
+.btn-danger{background:transparent;border-color:#dc2626;color:#ef4444}.btn-danger:hover{background:#dc2626;color:#fff}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.group-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:12px}
+.group-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.group-label{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.group-color{width:12px;height:12px;border-radius:3px}
+.group-remove{background:none;border:none;color:#64748b;cursor:pointer;font-size:16px;padding:4px}.group-remove:hover{color:#ef4444}
+.check-grid{display:flex;gap:10px;flex-wrap:wrap}
+.check-item{display:flex;align-items:center;gap:6px;cursor:pointer}
+.check-item input{width:auto;margin:0}.check-item span{font-size:12px;color:#94a3b8}
+.progress-wrap{margin-bottom:12px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:#94a3b8;margin-bottom:4px}
+.progress-bar{height:6px;background:#1e293b;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:#6366f1;border-radius:3px;transition:width .3s}.progress-fill.done{background:#22c55e}
+.log-box{background:#0f172a;border:1px solid #334155;border-radius:6px;padding:12px;max-height:200px;overflow-y:auto;font-size:11px;color:#64748b;line-height:1.8;font-family:'SF Mono','Menlo',monospace}
+.log-ok{color:#22c55e}.log-warn{color:#fbbf24}.log-err{color:#ef4444}
+.result-tabs{display:flex;gap:2px;border-bottom:1px solid #334155;margin-bottom:16px;overflow-x:auto}
+.r-tab{padding:9px 16px;font-size:13px;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap;font-weight:500}
+.r-tab.active{color:#818cf8;border-bottom-color:#818cf8}
+.r-panel{display:none}.r-panel.active{display:block}
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.metric{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px}
+.metric-label{font-size:11px;color:#64748b;margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:700;color:#e2e8f0}
+.metric-sub{font-size:11px;color:#475569;margin-top:2px}
+.kw-table{width:100%;border-collapse:collapse;font-size:12px}
+.kw-table th{background:#1e293b;color:#94a3b8;padding:8px 12px;text-align:left;border-bottom:1px solid #334155;font-weight:600;position:sticky;top:0;z-index:1}
+.kw-table td{padding:7px 12px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+.kw-table tr:hover td{background:rgba(99,102,241,.05)}
+.kw-bar{height:4px;background:#334155;border-radius:2px;overflow:hidden;margin-top:2px}
+.kw-bar-fill{height:100%;background:#6366f1;border-radius:2px}
+.kw-scroll{max-height:400px;overflow-y:auto;border:1px solid #334155;border-radius:8px}
+#sna-container{width:100%;height:550px;background:#0f172a;border:1px solid #334155;border-radius:8px;position:relative;overflow:hidden}
+.chart-wrap{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:16px}
+.chart-title{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:12px}
+.chart-canvas{width:100%;max-height:350px}
+.yt-card{background:#0f172a;border:1px solid #334155;border-radius:8px;overflow:hidden;transition:border-color .2s}
+.yt-card:hover{border-color:#6366f1}
+.yt-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:#1e293b}
+.yt-info{padding:10px 12px}
+.yt-title{font-size:12px;font-weight:600;color:#e2e8f0;margin-bottom:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.yt-stats{display:flex;gap:12px;font-size:11px;color:#94a3b8}
+.yt-stat b{color:#e2e8f0}
+.prompt-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:14px;margin-bottom:10px}
+.prompt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prompt-title{font-size:13px;font-weight:600;color:#e2e8f0}
+.copy-btn{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);color:#818cf8;padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit}
+.copy-btn:hover{background:rgba(99,102,241,.2)}.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.prompt-text{font-size:11px;color:#64748b;line-height:1.8;max-height:120px;overflow-y:auto;white-space:pre-wrap;font-family:'SF Mono','Menlo',monospace}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-overlay.show{display:flex}
+.modal{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:600;color:#e2e8f0;margin-bottom:16px}
+.tag-list{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.tag{display:inline-flex;align-items:center;gap:4px;background:#334155;color:#94a3b8;font-size:11px;padding:3px 8px;border-radius:4px}
+.tag .tag-x{cursor:pointer;color:#64748b;font-weight:700}.tag .tag-x:hover{color:#ef4444}
+.excl-btn{background:none;border:none;color:#64748b;cursor:pointer;font-size:10px;padding:2px 4px;border-radius:3px}
+.excl-btn:hover{background:#dc2626;color:#fff}
+.report-section{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:14px;margin-bottom:10px}
+.report-section h4{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:6px}
+.report-section textarea{min-height:100px;font-size:12px}
+.sna-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:12px 0}
+.sna-info-item{background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 10px}
+.sna-info-label{font-size:10px;color:#64748b}.sna-info-val{font-size:16px;font-weight:700;color:#e2e8f0}
+
+/* ── 히스토리 ── */
+.hist-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #1e293b;transition:background .15s;cursor:pointer;position:relative}
+.hist-item:hover{background:rgba(99,102,241,.05)}
+.hist-item.selected{background:rgba(99,102,241,.08)}
+.hist-check{width:auto;margin:0;flex-shrink:0;accent-color:#6366f1}
+.hist-num{font-size:11px;color:#475569;font-weight:600;width:24px;text-align:center;flex-shrink:0}
+.hist-date{font-size:11px;color:#64748b;width:80px;flex-shrink:0}
+.hist-question{font-size:12px;color:#e2e8f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-groups{display:flex;gap:3px;flex-shrink:0}
+.hist-group-tag{font-size:10px;background:#334155;color:#94a3b8;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.hist-actions{display:flex;gap:4px;flex-shrink:0}
+.hist-act{background:none;border:none;color:#64748b;cursor:pointer;font-size:14px;padding:2px 4px;border-radius:3px}
+.hist-act:hover{background:#334155;color:#e2e8f0}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">my<span>Data</span>Analysis</div>
+  <div class="header-btns">
+    <button class="h-btn" onclick="saveToHistory()" style="background:#22c55e;color:#fff;border-color:#22c55e">💾 저장</button>
+    <button class="h-btn" onclick="openSettings()">API 설정</button>
+    <button class="h-btn" onclick="openSetup()">프로그램 설치</button>
+  </div>
+</div>
+<div class="steps-nav">
+  <div class="step-tab active" onclick="goStep(0)">1. 주제</div>
+  <div class="step-tab" onclick="goStep(1)">2. 비교 그룹 설정</div>
+  <div class="step-tab" onclick="goStep(2)">3. 데이터 수집</div>
+  <div class="step-tab" onclick="goStep(3)">4. 분석 결과</div>
+  <div class="step-tab" onclick="goStep(4)">5. AI 프롬프트</div>
+  <div class="step-tab" onclick="goStep(5)">6. 앱 소개</div>
+</div>
+<div class="main">
+  <!-- STEP 1 -->
+  <div class="step-panel active" id="step0">
+    <div class="card">
+      <div class="card-title">주제</div>
+      <div class="card-desc">분석하고 싶은 내용을 자유롭게 작성하세요. AI 프롬프트 생성에 활용됩니다.</div>
+      <textarea id="researchQuestion" placeholder="예: 코스피 5,000 / 6,000 / 7,000 돌파 시점에서 대중 반응은 어떻게 달라지는가?"></textarea>
+      <div class="btn-row" style="justify-content:space-between">
+        <button class="btn btn-secondary" onclick="saveToHistory()">현재 작업 저장</button>
+        <button class="btn btn-green" onclick="goStep(1)">다음: 비교 그룹 설정 &rarr;</button>
+      </div>
+    </div>
+    <!-- 히스토리 -->
+    <div class="card" id="historyCard">
+      <div class="card-title" style="justify-content:space-between">
+        <span>작업 히스토리</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm btn-secondary" onclick="histSelectAll()">전체선택</button>
+          <button class="btn btn-sm btn-secondary" onclick="histDeselectAll()">선택해제</button>
+          <button class="btn btn-sm btn-danger" onclick="histDeleteSelected()">선택 삭제</button>
+        </div>
+      </div>
+      <div id="historyList" style="max-height:400px;overflow-y:auto">
+        <div style="color:#64748b;font-size:12px;padding:12px;text-align:center">로딩 중...</div>
+      </div>
+    </div>
+  </div>
+  <!-- STEP 2 -->
+  <div class="step-panel" id="step1">
+    <div class="card">
+      <div class="card-title">비교 그룹 설정</div>
+      <div class="card-desc">분석할 그룹을 추가하세요. 각 그룹별로 검색어, 기간, 수집 소스를 지정합니다.</div>
+      <div id="groupsContainer"></div>
+      <div class="btn-row" style="justify-content:space-between">
+        <button class="btn btn-secondary" onclick="addGroup()">+ 그룹 추가</button>
+        <button class="btn btn-green" onclick="startCollection()">데이터 수집 시작 &rarr;</button>
+      </div>
+    </div>
+  </div>
+  <!-- STEP 3 -->
+  <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-title">데이터 수집 진행</div>
+      <div id="collectProgress"></div>
+      <div class="log-box" id="collectLog"></div>
+    </div>
+    <div id="collectPreview" style="display:none">
+      <div class="btn-row" style="justify-content:space-between;margin-bottom:16px">
+        <button class="btn btn-secondary" onclick="downloadAllCSV()">전체 CSV 다운로드</button>
+        <button class="btn btn-green" onclick="runAnalysis()">다음: 분석 실행 &rarr;</button>
+      </div>
+      <div class="card">
+        <div class="card-title">수집 결과 요약</div>
+        <div class="chart-wrap"><div class="chart-title">그룹별 수집량</div><canvas id="chartCollect" class="chart-canvas"></canvas></div>
+        <div id="collectDataTables"></div>
+      </div>
+    </div>
+  </div>
+  <!-- STEP 4 -->
+  <div class="step-panel" id="step3">
+    <div class="result-tabs" id="resultTabs"></div>
+    <div id="resultPanels"></div>
+  </div>
+  <!-- STEP 5 -->
+  <div class="step-panel" id="step4">
+    <div class="card">
+      <div class="card-title">AI 해석 프롬프트</div>
+      <div class="card-desc">분석 결과 기반 자동 생성 프롬프트입니다. 복사해서 ChatGPT/Claude/Gemini에 붙여넣기 하세요.</div>
+      <div id="promptsContainer"></div>
+      <div class="btn-row" style="justify-content:space-between;align-items:center">
+        <button class="btn btn-secondary" onclick="addCustomPrompt()">+ 프롬프트 추가</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:12px;color:#64748b">복사 후 붙여넣기 →</span>
+          <a href="https://chat.openai.com" target="_blank" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;background:#10a37f;color:#fff;display:inline-flex;align-items:center;gap:4px">ChatGPT</a>
+          <a href="https://claude.ai/new" target="_blank" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;background:#d97706;color:#fff;display:inline-flex;align-items:center;gap:4px">Claude</a>
+          <a href="https://gemini.google.com/app" target="_blank" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;background:#4285f4;color:#fff;display:inline-flex;align-items:center;gap:4px">Gemini</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- STEP 6: 앱 소개 -->
+  <div class="step-panel" id="step5">
+    <div class="card">
+      <div class="card-title">myDataAnalysis - 앱 소개</div>
+      <div class="card-desc">멀티소스 데이터 수집 및 SNA 기반 비교 분석 플랫폼</div>
+      <div style="line-height:2.2;font-size:13px;color:#cbd5e1">
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">개발 목적</h3>
+        <p>대학원 수업(데이터 수집 및 분석 프로그래밍) 조별 과제용으로 제작된 웹 기반 분석 도구입니다. 뉴스와 유튜브에서 특정 이벤트에 대한 대중 반응을 수집하고, 키워드 분석 및 SNA 네트워크 시각화를 통해 담론 구조를 비교 분석합니다.</p>
+
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">기술 스택</h3>
+        <ul style="margin-left:20px;color:#94a3b8">
+          <li><strong style="color:#e2e8f0">프론트엔드</strong>: HTML, CSS, JavaScript, D3.js (SNA 시각화), Chart.js (차트)</li>
+          <li><strong style="color:#e2e8f0">백엔드</strong>: Node.js, Express, Axios, XLSX</li>
+          <li><strong style="color:#e2e8f0">형태소 분석</strong>: Python 3, kiwipiepy (C++ 기반 한국어 NLP)</li>
+          <li><strong style="color:#e2e8f0">데이터 소스</strong>: Google News RSS, YouTube Data API v3</li>
+          <li><strong style="color:#e2e8f0">AI 연동</strong>: 복사-붙여넣기 방식 (API 키 불필요)</li>
+        </ul>
+
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">주요 기능</h3>
+        <ul style="margin-left:20px;color:#94a3b8">
+          <li><strong style="color:#e2e8f0">멀티소스 데이터 수집</strong>: Google News + YouTube (영상 메타데이터 + 댓글)</li>
+          <li><strong style="color:#e2e8f0">그룹 비교 분석</strong>: 최대 6개 그룹별 키워드·SNA·참여도 비교</li>
+          <li><strong style="color:#e2e8f0">소스별 분리 분석</strong>: 뉴스 vs 유튜브 댓글 키워드 개별 분석</li>
+          <li><strong style="color:#e2e8f0">감성 분석</strong>: 키워드 사전 기반 긍정/부정/중립 분류 + 좋아요 가중 공감도</li>
+          <li><strong style="color:#e2e8f0">SNA 네트워크</strong>: 키워드 동시출현 네트워크, Louvain 커뮤니티 탐지, PageRank, Eigenvector</li>
+          <li><strong style="color:#e2e8f0">EDA 탐색</strong>: 산점도, 히스토그램, 박스플롯, 히트맵, 페어플롯</li>
+          <li><strong style="color:#e2e8f0">AI 프롬프트 자동 생성</strong>: 분석 결과 기반 보고서 작성용 프롬프트</li>
+          <li><strong style="color:#e2e8f0">내보내기</strong>: Excel(XLSX), CSV, JSON 형식 지원</li>
+        </ul>
+
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">업데이트 이력</h3>
+        <ul style="margin-left:20px;color:#94a3b8">
+          <li><strong style="color:#e2e8f0">v1.0</strong> (2026-04): 초기 버전 - 뉴스/블로그/유튜브 수집 + 키워드 분석 + SNA</li>
+          <li><strong style="color:#e2e8f0">v1.1</strong> (2026-04): EDA 차트 추가 (산점도, 히트맵, 페어플롯)</li>
+          <li><strong style="color:#e2e8f0">v1.2</strong> (2026-05): Google News 검색 지원 (기간 필터링 가능)</li>
+          <li><strong style="color:#e2e8f0">v1.3</strong> (2026-05): 소스별 분리 분석 (뉴스 vs 유튜브 키워드 분리)</li>
+          <li><strong style="color:#e2e8f0">v1.4</strong> (2026-05): 감성 분석 추가 (키워드 사전 + 좋아요 가중 공감도)</li>
+        </ul>
+
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">시스템 아키텍처</h3>
+        <pre style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-size:11px;line-height:1.7;color:#94a3b8;overflow-x:auto">
+브라우저 (HTML/JS/D3.js/Chart.js)
+    |  HTTP localhost:3007
+Node.js + Express 서버
+    |-- Google News RSS (뉴스 수집)
+    |-- YouTube Data API v3 (영상 + 댓글 수집)
+    |-- Python kiwipiepy (형태소 분석, child_process)
+    |-- XLSX/CSV (데이터 내보내기)
+    +-- JSON (작업 저장/불러오기)</pre>
+
+        <h3 style="font-size:15px;color:#818cf8;margin:20px 0 10px;font-weight:700">분석 파이프라인</h3>
+        <pre style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-size:11px;line-height:1.7;color:#94a3b8;overflow-x:auto">
+[데이터 수집] → [텍스트 정제] → [형태소 분석(kiwipiepy)]
+    → [키워드 빈도 집계] → [동시출현 매트릭스]
+    → [SNA 네트워크 구축] → [커뮤니티 탐지]
+    → [감성 분석] → [시각화 + 내보내기]</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h3>API 키 설정</h3>
+    <div class="form-group"><label>YouTube API Key</label><input id="cfgYoutubeKey" placeholder="선택"></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="saveSettings()">저장</button><button class="btn btn-secondary" onclick="closeModal('settingsModal')">닫기</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="setupModal">
+  <div class="modal">
+    <h3>프로그램 설치 확인</h3>
+    <div class="card-desc">이 앱을 사용하려면 아래 프로그램이 필요합니다.</div>
+    <div id="setupStatus"></div>
+    <div id="setupInstallLog" class="log-box" style="display:none;margin-top:12px;max-height:150px"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnInstallKiwi" style="display:none" onclick="installKiwipiepy()">kiwipiepy 자동 설치</button>
+      <button class="btn btn-secondary" onclick="closeModal('setupModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 첫 실행 설치 가이드 모달 -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal" style="max-width:650px">
+    <h3 style="font-size:20px;margin-bottom:4px">myDataAnalysis 설치 가이드</h3>
+    <div class="card-desc" style="margin-bottom:20px">앱을 사용하기 위해 필요한 프로그램을 확인합니다.</div>
+
+    <div id="welcomeChecks" style="margin-bottom:20px">
+      <div style="text-align:center;color:#64748b;padding:20px">확인 중...</div>
+    </div>
+
+    <div id="welcomeInstallLog" class="log-box" style="display:none;margin-bottom:12px;max-height:150px"></div>
+
+    <div class="btn-row" id="welcomeActions">
+      <button class="btn btn-secondary" onclick="closeModal('welcomeModal');localStorage.setItem('setupDone','1')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══ STATE ═══ */
+const GC = ['#818cf8','#38bdf8','#f472b6','#fbbf24','#34d399','#fb923c'];
+let groups = [], collectedData = {}, analysisResults = {}, newsAnalysis = {}, youtubeAnalysis = {}, currentStep = 0;
+let stopwords = new Set(['font','quot','color','target','blank','href','amp','nbsp','lt','gt','br','div','span','class','style','width','height','src','img','http','https','www','com','html','strong','em','size','face','apos','middot','v.daum.net','daum','naver','nate','tistory','net','org','kr','co','nid','oid','aid','sid','article','news','blog','entry','search','query','display','start','sort','date','page','view','type','data','text','link','title','name','value','content','undefined','null','true','false','function','return','noopener','noreferrer','youtube','google','the','a','an','in','on','at','to','for','of','with','by','from','as','is','was','are','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','need','must','it','its','this','that','these','those','he','she','they','we','you','i','me','him','her','us','them','my','your','his','our','their','who','whom','which','what','where','when','how','why','if','or','and','but','not','no','nor','so','yet','both','either','neither','each','every','all','any','few','more','most','other','some','such','than','too','very','just','also','about','up','out','into','over','after','before','between','under','again','further','then','once','here','there','only','own','same','through','during','above','below','against','among','around','because','since','until','while','although','though','even','still','already','always','never','often','sometimes','usually','however','therefore','thus','hence','instead','besides','moreover','furthermore','nevertheless','nonetheless','meanwhile','otherwise','anyway','indeed','certainly','perhaps','maybe','probably','actually','really','quite','rather','enough','almost','already','else','else','another']);
+let customPrompts = [];
+let reportSections = [{ title: '분석 개요', content: '' }, { title: 'AI 해석 결과', content: '' }, { title: '결론 및 제언', content: '' }];
+
+/* ═══ NAV ═══ */
+function goStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step-panel').forEach((p,i) => p.classList.toggle('active', i===n));
+  document.querySelectorAll('.step-tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  if (n===4 && Object.keys(analysisResults).length) generatePrompts();
+}
+
+/* ═══ GROUPS ═══ */
+function addGroup() {
+  const i = groups.length;
+  groups.push({ label:`그룹 ${String.fromCharCode(65+i)}`, keyword:'', dateFrom:'', dateTo:'', newsDisplay:200,
+    sources:{gnews:true,youtube:false}, ytKeyword:'', ytMaxResults:10, ytMaxComments:100 });
+  renderGroups();
+}
+function removeGroup(i) { groups.splice(i,1); renderGroups(); }
+function renderGroups() {
+  document.getElementById('groupsContainer').innerHTML = groups.map((g,i) => `
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-label"><div class="group-color" style="background:${GC[i%GC.length]}"></div>
+          <input value="${g.label}" onchange="groups[${i}].label=this.value" placeholder="그룹 이름 입력" style="width:140px;background:#0f172a;border:1px solid #475569;color:#e2e8f0;font-size:13px;font-weight:600;padding:4px 8px;border-radius:4px"></div>
+        ${groups.length>1?`<button class="group-remove" onclick="removeGroup(${i})">&#x2715;</button>`:''}
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="form-group"><label>검색어</label><input value="${g.keyword}" onchange="groups[${i}].keyword=this.value" placeholder="코스피 5000"></div>
+        <div class="form-group"><label>시작일</label><input type="date" value="${g.dateFrom}" onchange="groups[${i}].dateFrom=this.value"></div>
+        <div class="form-group"><label>종료일</label><input type="date" value="${g.dateTo}" onchange="groups[${i}].dateTo=this.value"></div>
+        <div class="form-group"><label>뉴스 수집 건수 (최대 1000)</label><input type="number" value="${g.newsDisplay||200}" onchange="groups[${i}].newsDisplay=+this.value" min="10" max="1000" step="10"></div>
+      </div>
+      <div class="form-group"><label>수집 소스</label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" ${g.sources.gnews?'checked':''} onchange="groups[${i}].sources.gnews=this.checked"><span>구글 뉴스</span></label>
+          <label class="check-item"><input type="checkbox" ${g.sources.youtube?'checked':''} onchange="groups[${i}].sources.youtube=this.checked;renderGroups()"><span>유튜브</span></label>
+        </div>
+      </div>
+      ${g.sources.youtube?`<div class="form-row form-row-3">
+        <div class="form-group"><label>유튜브 검색어 (비워두면 위 검색어)</label><input value="${g.ytKeyword||''}" onchange="groups[${i}].ytKeyword=this.value"></div>
+        <div class="form-group"><label>영상 수 (최대 50)</label><input type="number" value="${g.ytMaxResults}" onchange="groups[${i}].ytMaxResults=+this.value" min="1" max="50"></div>
+        <div class="form-group"><label>영상당 댓글 수 (최대 500)</label><input type="number" value="${g.ytMaxComments}" onchange="groups[${i}].ytMaxComments=+this.value" min="0" max="500"></div>
+      </div>`:''}
+    </div>`).join('');
+}
+addGroup(); addGroup();
+
+/* ═══ UTILS ═══ */
+function log(m,t=''){const e=document.getElementById('collectLog');e.innerHTML+=`<div class="${t}">${new Date().toLocaleTimeString()} ${m}</div>`;e.scrollTop=e.scrollHeight}
+function updateProgress(i,p){const f=document.querySelector(`#prog-${i} .progress-fill`),l=document.querySelector(`#prog-${i} .prog-pct`);if(f)f.style.width=p+'%';if(l)l.textContent=p+'%';if(p>=100&&f)f.classList.add('done')}
+function formatNum(n){if(n>=1e8)return(n/1e8).toFixed(1)+'억';if(n>=1e4)return(n/1e4).toFixed(1)+'만';if(n>=1e3)return(n/1e3).toFixed(1)+'천';return n.toString()}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function cleanText(s){const t=(s||'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&apos;/g,"'");return t.replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ').replace(/https?:\/\/\S+/g,' ').replace(/\s+/g,' ').trim()}
+
+/* ═══ COLLECTION ═══ */
+async function startCollection(){
+  const valid=groups.filter(g=>g.keyword.trim());
+  if(!valid.length)return alert('최소 1개 그룹에 검색어를 입력해주세요.');
+  goStep(2); collectedData={};
+  document.getElementById('collectLog').innerHTML='';
+  document.getElementById('collectPreview').style.display='none';
+  document.getElementById('collectProgress').innerHTML=groups.map((g,i)=>`
+    <div class="progress-wrap" id="prog-${i}"><div class="progress-label"><span>${g.label} - ${g.keyword}</span><span class="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></div>`).join('');
+
+  for(let i=0;i<groups.length;i++){
+    const g=groups[i]; if(!g.keyword.trim())continue;
+    collectedData[i]={news:[],youtube:[],comments:[]};
+    let progress=0; const srcCount=Object.values(g.sources).filter(Boolean).length||1; const pctPer=Math.floor(100/srcCount);
+
+    if(g.sources.gnews){
+      log(`[${g.label}] 구글 뉴스 수집 중...`);
+      try{const p=new URLSearchParams({type:'gnews',query:g.keyword,display:g.newsDisplay||200});if(g.dateFrom)p.set('dateFrom',g.dateFrom);if(g.dateTo)p.set('dateTo',g.dateTo);
+        const r=await(await fetch('/api/search?'+p)).json();collectedData[i].news.push(...(r.items||[]));log(`[${g.label}] 구글 뉴스 ${r.items?.length||0}건`,'log-ok');
+      }catch(e){log(`[${g.label}] 구글 뉴스 실패: ${e.message}`,'log-err');}
+      progress+=pctPer;updateProgress(i,progress);
+    }
+    if(g.sources.youtube){
+      const q=g.ytKeyword||g.keyword;log(`[${g.label}] 유튜브: "${q}"`);
+      try{const p=new URLSearchParams({query:q,maxResults:g.ytMaxResults,order:'viewCount'});
+        if(g.dateFrom)p.set('publishedAfter',g.dateFrom+'T00:00:00Z');if(g.dateTo)p.set('publishedBefore',g.dateTo+'T23:59:59Z');
+        const r=await(await fetch('/api/youtube/search?'+p)).json();if(r.error)throw new Error(r.error);
+        collectedData[i].youtube=r.items||[];log(`[${g.label}] 영상 ${r.items?.length||0}건`,'log-ok');
+        if(g.ytMaxComments>0&&r.items?.length){
+          for(const v of r.items){
+            try{const cr=await(await fetch(`/api/youtube/comments?videoId=${v.videoId}&maxResults=${g.ytMaxComments}`)).json();
+              if(cr.disabled){log(`  [${v.title.substring(0,25)}...] 댓글 비활성화`,'log-warn');continue;}
+              const cmts=(cr.comments||[]).map(c=>({...c,videoTitle:v.title}));
+              collectedData[i].comments.push(...cmts);log(`  [${v.title.substring(0,25)}...] 댓글 ${cmts.length}건`,'log-ok');
+            }catch{log(`  댓글 수집 실패`,'log-warn');}
+          }
+        }
+      }catch(e){log(`[${g.label}] 유튜브: ${e.message}`,'log-err');}
+      progress+=pctPer;updateProgress(i,progress);
+    }
+    updateProgress(i,100);log(`[${g.label}] 수집 완료!`,'log-ok');
+  }
+  log('모든 그룹 수집 완료!','log-ok');
+  renderCollectPreview();
+}
+
+function renderCollectPreview(){
+  document.getElementById('collectPreview').style.display='block';
+  // 차트
+  const labels=[],newsD=[],ytD=[],cmtD=[];
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;labels.push(g.label);newsD.push(d.news?.length||0);ytD.push(d.youtube?.length||0);cmtD.push(d.comments?.length||0)});
+  makeChart('chartCollect',{type:'bar',data:{labels,datasets:[{label:'뉴스',data:newsD,backgroundColor:'#6366f1'},{label:'영상',data:ytD,backgroundColor:'#f472b6'},{label:'댓글',data:cmtD,backgroundColor:'#fbbf24'}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+
+  // 데이터 테이블
+  let html='';
+  groups.forEach((g,i)=>{
+    const d=collectedData[i];if(!d)return;
+    html+=`<div class="card" style="margin-top:12px"><div class="card-title" style="color:${GC[i%GC.length]}">${g.label}
+      <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'news')">뉴스 CSV</button>
+      <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'youtube')">영상 CSV</button>
+      <button class="btn btn-sm btn-secondary" onclick="downloadGroupCSV(${i},'comments')">댓글 CSV</button>
+    </div>`;
+    // 영상 테이블
+    if(d.youtube?.length){
+      html+=`<div class="kw-scroll" style="max-height:250px;margin-bottom:12px"><table class="kw-table">
+        <tr><th>#</th><th>제목</th><th>채널</th><th>조회수</th><th>좋아요</th><th>댓글수</th><th>수집 댓글</th><th>게시일</th></tr>`;
+      d.youtube.sort((a,b)=>b.viewCount-a.viewCount).forEach((v,j)=>{
+        const collectedCmts=d.comments.filter(c=>c.videoId===v.videoId).length;
+        html+=`<tr><td>${j+1}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cleanText(v.title)}</td>
+          <td>${v.channelTitle}</td><td style="text-align:right">${v.viewCount.toLocaleString()}</td>
+          <td style="text-align:right">${v.likeCount.toLocaleString()}</td><td style="text-align:right">${v.commentCount.toLocaleString()}</td>
+          <td style="text-align:right;color:#22c55e">${collectedCmts}</td><td>${v.publishedAt?.slice(0,10)||''}</td></tr>`;
+      });
+      html+=`</table></div>`;
+    }
+    // 뉴스 요약
+    if(d.news?.length){html+=`<div style="font-size:12px;color:#64748b;margin-bottom:8px">뉴스 ${d.news.length}건 수집됨</div>`;}
+    html+=`</div>`;
+  });
+  document.getElementById('collectDataTables').innerHTML=html;
+}
+
+/* ═══ CSV DOWNLOAD ═══ */
+function buildRows(i,type){
+  const d=collectedData[i],g=groups[i];if(!d)return[];
+  if(type==='news')return(d.news||[]).map(it=>({group:g.label,source:'news',title:cleanText(it.title),description:cleanText(it.description),date:it.pubDate||'',press:it.bloggername||'',link:it.link||it.originallink||''}));
+  if(type==='youtube')return(d.youtube||[]).map(v=>({group:g.label,title:v.title,channel:v.channelTitle,viewCount:v.viewCount,likeCount:v.likeCount,commentCount:v.commentCount,publishedAt:v.publishedAt?.slice(0,10)||'',videoId:v.videoId}));
+  if(type==='comments')return(d.comments||[]).map(c=>({group:g.label,videoTitle:c.videoTitle||'',author:c.author,text:c.text,likeCount:c.likeCount||0,publishedAt:c.publishedAt||'',videoId:c.videoId}));
+  return[];
+}
+async function downloadGroupCSV(i,type){
+  const rows=buildRows(i,type);if(!rows.length)return alert('데이터 없음');
+  const r=await fetch('/api/export/csv',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:`${groups[i].label}_${type}.csv`,rows})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`${groups[i].label}_${type}.csv`;a.click();URL.revokeObjectURL(u);
+}
+async function downloadAllCSV(){
+  const files=[];
+  // 그룹별 뉴스
+  const newsRows=[];
+  groups.forEach((g,i)=>{buildRows(i,'news').forEach(r=>newsRows.push(r))});
+  if(newsRows.length) files.push({filename:'01_뉴스_전체.csv',rows:newsRows});
+  // 그룹별 유튜브 영상
+  const ytRows=[];
+  groups.forEach((g,i)=>{buildRows(i,'youtube').forEach(r=>ytRows.push(r))});
+  if(ytRows.length) files.push({filename:'02_유튜브_영상.csv',rows:ytRows});
+  // 그룹별 유튜브 댓글
+  const cmtRows=[];
+  groups.forEach((g,i)=>{buildRows(i,'comments').forEach(r=>cmtRows.push(r))});
+  if(cmtRows.length) files.push({filename:'03_유튜브_댓글.csv',rows:cmtRows});
+  // 통합 텍스트
+  const allRows=[];
+  newsRows.forEach(r=>allRows.push({그룹:r.group,소스:'뉴스',텍스트:(r.title||'')+' '+(r.description||''),좋아요:'',작성시간:r.date||''}));
+  cmtRows.forEach(r=>allRows.push({그룹:r.group,소스:'유튜브댓글',텍스트:r.text||'',좋아요:r.likeCount||0,작성시간:r.publishedAt||''}));
+  if(allRows.length) files.push({filename:'04_통합_텍스트.csv',rows:allRows});
+  // 수집 요약
+  const summaryRows=[];
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;const yt=d.youtube||[];
+    summaryRows.push({그룹:g.label,뉴스건수:(d.news||[]).length,영상수:yt.length,댓글수:(d.comments||[]).length,
+      총조회수:yt.reduce((s,v)=>s+(v.viewCount||0),0),총좋아요:yt.reduce((s,v)=>s+(v.likeCount||0),0),총댓글수:yt.reduce((s,v)=>s+(v.commentCount||0),0)})});
+  if(summaryRows.length) files.push({filename:'05_수집_요약.csv',rows:summaryRows});
+
+  if(!files.length) return alert('데이터 없음');
+  const r=await fetch('/api/export/csv-zip',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='전체데이터.zip';a.click();URL.revokeObjectURL(u);
+}
+
+/* ═══ ANALYSIS ═══ */
+async function analyzeTexts(texts){
+  const r=await(await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({texts,stopwords:[...stopwords],minLen:2})})).json();
+  if(r.error)throw new Error(r.error);
+  for(const w of Object.keys(r.wordFreq)){if(stopwords.has(w)||stopwords.has(w.toLowerCase()))delete r.wordFreq[w];}
+  r.uniqueWords=Object.keys(r.wordFreq).length;
+  r.totalWords=Object.values(r.wordFreq).reduce((s,v)=>s+v,0);
+  return r;
+}
+function topWords(wf,n=30){return Object.entries(wf).filter(([w])=>!stopwords.has(w)&&!stopwords.has(w.toLowerCase())).sort((a,b)=>b[1]-a[1]).slice(0,n)}
+async function runAnalysis(){
+  log('형태소 분석 시작...','log-ok'); analysisResults={}; newsAnalysis={}; youtubeAnalysis={};
+  for(const[gi,data]of Object.entries(collectedData)){
+    const allTexts=[],newsTexts=[],ytTexts=[];
+    for(const it of(data.news||[])){const t=cleanText(it.title)+' '+cleanText(it.description);allTexts.push(t);newsTexts.push(t);}
+    for(const c of(data.comments||[])){const t=c.text||'';allTexts.push(t);ytTexts.push(t);}
+    if(!allTexts.length){log(`[${groups[gi]?.label}] 텍스트 없음`,'log-warn');continue;}
+    try{
+      // 통합 분석
+      const r=await analyzeTexts(allTexts);
+      analysisResults[gi]=r;log(`[${groups[gi]?.label}] 통합 분석 완료 - ${r.uniqueWords}개 단어`,'log-ok');
+      // 뉴스 분리 분석
+      if(newsTexts.length){
+        const nr=await analyzeTexts(newsTexts);
+        newsAnalysis[gi]=nr;log(`[${groups[gi]?.label}] 뉴스 분석 완료 - ${nr.uniqueWords}개 단어`,'log-ok');
+      }
+      // 유튜브 댓글 분리 분석
+      if(ytTexts.length){
+        const yr=await analyzeTexts(ytTexts);
+        youtubeAnalysis[gi]=yr;log(`[${groups[gi]?.label}] 유튜브 댓글 분석 완료 - ${yr.uniqueWords}개 단어`,'log-ok');
+      }
+    }catch(e){log(`[${groups[gi]?.label}] 분석 실패: ${e.message}`,'log-err');}
+  }
+  renderResults();goStep(3);
+}
+
+function excludeWord(word){
+  stopwords.add(word);
+  for(const store of [analysisResults,newsAnalysis,youtubeAnalysis]){
+    for(const r of Object.values(store)){if(r.wordFreq[word]){r.totalWords-=r.wordFreq[word];delete r.wordFreq[word];r.uniqueWords=Object.keys(r.wordFreq).length;}}
+  }
+  renderResults();
+}
+
+/* ═══ RENDER RESULTS ═══ */
+const chartInstances={};
+function makeChart(id,cfg){if(chartInstances[id])chartInstances[id].destroy();const c=document.getElementById(id);if(!c)return;Chart.defaults.color='#94a3b8';Chart.defaults.borderColor='#334155';chartInstances[id]=new Chart(c,cfg);}
+function switchKwSrc(src){
+  ['All','News','Yt'].forEach(s=>{const el=document.getElementById('kwTable'+s);if(el)el.style.display='none'});
+  ['kwSrcAll','kwSrcNews','kwSrcYt'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='btn btn-sm btn-secondary'}});
+  if(src==='all'){document.getElementById('kwTableAll').style.display='';document.getElementById('kwSrcAll').className='btn btn-sm btn-primary';}
+  else if(src==='news'){document.getElementById('kwTableNews').style.display='';document.getElementById('kwSrcNews').className='btn btn-sm btn-primary';}
+  else{document.getElementById('kwTableYt').style.display='';document.getElementById('kwSrcYt').className='btn btn-sm btn-primary';}
+}
+
+/* ═══ 감성 분석 ═══ */
+const SENT_POS = new Set(['좋다','좋아','좋은','최고','대박','축하','감사','행복','기쁘','희망','성공','훌륭','멋지','잘했','존경','응원','자랑','대단','사랑','기대','축복','환호','감동','보람','수익','이익','상승','돌파','성장','발전','번영','풍요','긍정','흥분','신나','즐겁','만족','감격','영광','위대','혁명','역사','기적','놀랍','든든','뿌듯','고맙','찬성','지지','공감','ㅋㅋ','ㅎㅎ','굿','짱','개꿀','레전드','킹','갓','존버','승리','화이팅','파이팅','개이득','떡상']);
+const SENT_NEG = new Set(['나쁘','싫다','싫어','최악','망했','실패','불안','걱정','위험','폭락','손실','손해','거품','버블','폭망','사기','거짓','기만','무능','분노','화나','짜증','절망','고통','슬프','비참','후회','한심','답답','어이없','황당','실망','개소리','쓰레기','쓰래기','지옥','조롱','욕심','탐욕','폭망','곱버스','물려','물렸','떡락','개미','호구','양아치','도둑','매국','종말','파산','파멸','공포','헬','ㅅㅂ','ㅈㄹ','ㅂㅅ','미친','개빡','존나','씹']);
+
+function analyzeSentiment(text){
+  if(!text)return{score:0,label:'중립'};
+  let pos=0,neg=0;
+  for(const w of SENT_POS){if(text.includes(w))pos++}
+  for(const w of SENT_NEG){if(text.includes(w))neg++}
+  const score=pos-neg;
+  return{score,pos,neg,label:score>0?'긍정':score<0?'부정':'중립'};
+}
+
+function runSentimentAnalysis(){
+  const results={};
+  for(const[gi,data]of Object.entries(collectedData)){
+    const comments=data.comments||[];
+    if(!comments.length)continue;
+    let posCount=0,negCount=0,neuCount=0;
+    let posLikes=0,negLikes=0,neuLikes=0;
+    let totalLikes=0;
+    const sentComments=comments.map(c=>{
+      const s=analyzeSentiment(c.text);
+      const likes=c.likeCount||0;
+      totalLikes+=likes;
+      if(s.label==='긍정'){posCount++;posLikes+=likes}
+      else if(s.label==='부정'){negCount++;negLikes+=likes}
+      else{neuCount++;neuLikes+=likes}
+      return{...c,sentiment:s,likes};
+    });
+    // 공감 가중 감성 (좋아요로 가중)
+    const weightedPos=totalLikes>0?(posLikes/totalLikes*100):0;
+    const weightedNeg=totalLikes>0?(negLikes/totalLikes*100):0;
+    const weightedNeu=totalLikes>0?(neuLikes/totalLikes*100):0;
+    // 인기 긍정/부정 댓글
+    const topPos=sentComments.filter(c=>c.sentiment.label==='긍정').sort((a,b)=>b.likes-a.likes).slice(0,10);
+    const topNeg=sentComments.filter(c=>c.sentiment.label==='부정').sort((a,b)=>b.likes-a.likes).slice(0,10);
+    results[gi]={posCount,negCount,neuCount,total:comments.length,posLikes,negLikes,neuLikes,totalLikes,weightedPos,weightedNeg,weightedNeu,topPos,topNeg,sentComments};
+  }
+  return results;
+}
+
+function renderResults(){
+  const tabsEl=document.getElementById('resultTabs'),panelsEl=document.getElementById('resultPanels');
+  const tabs=['개요','감성 분석','시계열','유튜브','EDA (탐색)'];
+  groups.forEach((g,i)=>{if(analysisResults[i])tabs.push(g.label)});
+  tabs.push('SNA 네트워크');
+  tabsEl.innerHTML=tabs.map((t,i)=>`<div class="r-tab ${i===0?'active':''}" onclick="showResultTab(${i})">${t}</div>`).join('');
+  let html='',ti=0;
+
+  /* ── 개요 ── */
+  html+=`<div class="r-panel active" id="rp-${ti++}">`;
+  html+=`<div class="metrics">`;
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;const tot=(d.news?.length||0)+(d.comments?.length||0);
+    const ytV=(d.youtube||[]).reduce((s,v)=>s+v.viewCount,0);
+    html+=`<div class="metric"><div class="metric-label" style="color:${GC[i%GC.length]}">${g.label}</div><div class="metric-val">${tot.toLocaleString()}</div>
+      <div class="metric-sub">뉴스 ${d.news?.length||0} / 댓글 ${d.comments?.length||0}</div>
+      ${d.youtube?.length?`<div class="metric-sub">영상 ${d.youtube.length}개 / 총 조회수 ${formatNum(ytV)}</div>`:''}</div>`;
+  });
+  html+=`</div>`;
+  // 키워드 비교
+  html+=`<div class="card"><div class="card-title">상위 키워드 비교 (Top 30)</div>`;
+  html+=`<div style="margin-bottom:8px"><label>제외된 단어</label><div class="tag-list" id="stopwordTags">${[...stopwords].slice(0,30).map(w=>`<span class="tag">${w} <span class="tag-x" onclick="stopwords.delete('${w}');renderResults()">×</span></span>`).join('')}${stopwords.size>30?`<span class="tag">...외 ${stopwords.size-30}개</span>`:''}</div>
+    <div style="display:flex;gap:6px;margin-top:4px"><input id="newStopword" placeholder="제외할 단어 입력" style="width:200px"><button class="btn btn-sm btn-secondary" onclick="const v=document.getElementById('newStopword').value.trim();if(v){stopwords.add(v);excludeWord(v)}">추가</button></div></div>`;
+  // 소스 선택 탭
+  html+=`<div style="display:flex;gap:4px;margin-bottom:10px">
+    <button class="btn btn-sm btn-primary" id="kwSrcAll" onclick="switchKwSrc('all')">통합</button>
+    <button class="btn btn-sm btn-secondary" id="kwSrcNews" onclick="switchKwSrc('news')">뉴스</button>
+    <button class="btn btn-sm btn-secondary" id="kwSrcYt" onclick="switchKwSrc('youtube')">유튜브 댓글</button>
+  </div>`;
+  const gKeys=Object.keys(analysisResults);
+  // 통합
+  html+=`<div id="kwTableAll"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
+  gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
+  html+=`<th></th></tr>`;
+  const gTops={};gKeys.forEach(gi=>{gTops[gi]=topWords(analysisResults[gi].wordFreq,30)});
+  for(let r=0;r<30;r++){
+    html+=`<tr><td>${r+1}</td>`;
+    let word='';
+    gKeys.forEach(gi=>{const it=gTops[gi]?.[r];if(it)word=it[0];html+=`<td>${it?`${it[0]} (${it[1]})`:'-'}</td>`});
+    html+=`<td>${word?`<button class="excl-btn" onclick="excludeWord('${word}')">제외</button>`:''}</td></tr>`;
+  }
+  html+=`</table></div></div>`;
+  // 뉴스
+  html+=`<div id="kwTableNews" style="display:none"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
+  gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
+  html+=`<th></th></tr>`;
+  const nTops={};gKeys.forEach(gi=>{nTops[gi]=newsAnalysis[gi]?topWords(newsAnalysis[gi].wordFreq,30):[]});
+  for(let r=0;r<30;r++){
+    html+=`<tr><td>${r+1}</td>`;
+    let word='';
+    gKeys.forEach(gi=>{const it=nTops[gi]?.[r];if(it)word=it[0];html+=`<td>${it?`${it[0]} (${it[1]})`:'-'}</td>`});
+    html+=`<td>${word?`<button class="excl-btn" onclick="excludeWord('${word}')">제외</button>`:''}</td></tr>`;
+  }
+  html+=`</table></div></div>`;
+  // 유튜브
+  html+=`<div id="kwTableYt" style="display:none"><div class="kw-scroll"><table class="kw-table"><tr><th>#</th>`;
+  gKeys.forEach(gi=>{html+=`<th style="color:${GC[gi%GC.length]}">${groups[gi].label}</th>`});
+  html+=`<th></th></tr>`;
+  const yTops={};gKeys.forEach(gi=>{yTops[gi]=youtubeAnalysis[gi]?topWords(youtubeAnalysis[gi].wordFreq,30):[]});
+  for(let r=0;r<30;r++){
+    html+=`<tr><td>${r+1}</td>`;
+    let word='';
+    gKeys.forEach(gi=>{const it=yTops[gi]?.[r];if(it)word=it[0];html+=`<td>${it?`${it[0]} (${it[1]})`:'-'}</td>`});
+    html+=`<td>${word?`<button class="excl-btn" onclick="excludeWord('${word}')">제외</button>`:''}</td></tr>`;
+  }
+  html+=`</table></div></div>`;
+  html+=`</div></div>`;
+
+  /* ── 감성 분석 ── */
+  html+=`<div class="r-panel" id="rp-${ti++}">`;
+  const sentResults=runSentimentAnalysis();
+  if(Object.keys(sentResults).length){
+    // 그룹별 감성 비율 비교
+    html+=`<div class="card"><div class="card-title">그룹별 댓글 감성 비율</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:14px">키워드 사전 기반 감성 분류 (긍정/부정/중립). 댓글 좋아요 수로 가중치를 적용하여 대중 공감도를 반영합니다.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="chart-wrap"><div class="chart-title">댓글 건수 기준 감성 비율</div><canvas id="chartSentCount" class="chart-canvas"></canvas></div>
+        <div class="chart-wrap"><div class="chart-title">좋아요 가중 감성 비율 (공감도)</div><canvas id="chartSentLike" class="chart-canvas"></canvas></div>
+      </div>
+    </div>`;
+    // 그룹별 상세
+    groups.forEach((g,i)=>{
+      const sr=sentResults[i];if(!sr)return;
+      const posP=(sr.posCount/sr.total*100).toFixed(1),negP=(sr.negCount/sr.total*100).toFixed(1),neuP=(sr.neuCount/sr.total*100).toFixed(1);
+      html+=`<div class="card"><div class="card-title" style="color:${GC[i%GC.length]}">${g.label} 감성 분석 결과</div>`;
+      html+=`<div class="metrics">
+        <div class="metric"><div class="metric-label">긍정</div><div class="metric-val" style="color:#22c55e">${sr.posCount}건</div><div class="metric-sub">${posP}% | 좋아요 ${sr.posLikes.toLocaleString()}</div></div>
+        <div class="metric"><div class="metric-label">부정</div><div class="metric-val" style="color:#ef4444">${sr.negCount}건</div><div class="metric-sub">${negP}% | 좋아요 ${sr.negLikes.toLocaleString()}</div></div>
+        <div class="metric"><div class="metric-label">중립</div><div class="metric-val" style="color:#94a3b8">${sr.neuCount}건</div><div class="metric-sub">${neuP}% | 좋아요 ${sr.neuLikes.toLocaleString()}</div></div>
+        <div class="metric"><div class="metric-label">공감 가중</div><div class="metric-val" style="font-size:14px;color:#fbbf24">${sr.weightedPos.toFixed(1)}% 긍정</div><div class="metric-sub">${sr.weightedNeg.toFixed(1)}% 부정 | ${sr.weightedNeu.toFixed(1)}% 중립</div></div>
+      </div>`;
+      // 인기 긍정 댓글
+      if(sr.topPos.length){
+        html+=`<div style="margin-top:12px"><div style="font-size:13px;font-weight:600;color:#22c55e;margin-bottom:8px">공감 많은 긍정 댓글 Top 10</div>`;
+        html+=`<div class="kw-scroll" style="max-height:200px"><table class="kw-table"><tr><th>댓글</th><th>좋아요</th><th>감성점수</th></tr>`;
+        sr.topPos.forEach(c=>{html+=`<tr><td style="max-width:400px;word-break:break-all">${escapeHtml((c.text||'').substring(0,150))}</td><td style="text-align:right;color:#22c55e;font-weight:600">${c.likes.toLocaleString()}</td><td style="text-align:center">+${c.sentiment.pos}</td></tr>`});
+        html+=`</table></div></div>`;
+      }
+      // 인기 부정 댓글
+      if(sr.topNeg.length){
+        html+=`<div style="margin-top:12px"><div style="font-size:13px;font-weight:600;color:#ef4444;margin-bottom:8px">공감 많은 부정 댓글 Top 10</div>`;
+        html+=`<div class="kw-scroll" style="max-height:200px"><table class="kw-table"><tr><th>댓글</th><th>좋아요</th><th>감성점수</th></tr>`;
+        sr.topNeg.forEach(c=>{html+=`<tr><td style="max-width:400px;word-break:break-all">${escapeHtml((c.text||'').substring(0,150))}</td><td style="text-align:right;color:#ef4444;font-weight:600">${c.likes.toLocaleString()}</td><td style="text-align:center">-${c.sentiment.neg}</td></tr>`});
+        html+=`</table></div></div>`;
+      }
+      html+=`</div>`;
+    });
+  } else {
+    html+=`<div class="card"><div style="text-align:center;color:#64748b;padding:40px">유튜브 댓글 데이터가 없습니다. 수집 후 분석해주세요.</div></div>`;
+  }
+  html+=`</div>`;
+
+  /* ── 시계열 ── */
+  html+=`<div class="r-panel" id="rp-${ti++}">`;
+  html+=`<div class="chart-wrap"><div class="chart-title">뉴스 기사 수 시계열</div><canvas id="chartTimeline" class="chart-canvas"></canvas></div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">유튜브 영상 게시일 분포</div><canvas id="chartYtTimeline" class="chart-canvas"></canvas></div></div>`;
+
+  /* ── 유튜브 ── */
+  html+=`<div class="r-panel" id="rp-${ti++}">`;
+  html+=`<div class="chart-wrap"><div class="chart-title">그룹별 총 조회수 비교</div><canvas id="chartYtViews" class="chart-canvas"></canvas></div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">그룹별 좋아요 / 댓글 수 비교</div><canvas id="chartYtEngagement" class="chart-canvas"></canvas></div>`;
+  groups.forEach((g,i)=>{
+    const vids=collectedData[i]?.youtube||[];if(!vids.length)return;
+    html+=`<div class="card"><div class="card-title" style="color:${GC[i%GC.length]}">${g.label} - 영상 (${vids.length}개)</div>`;
+    html+=`<div class="kw-scroll" style="max-height:300px"><table class="kw-table"><tr><th>#</th><th>제목</th><th>채널</th><th>조회수</th><th>좋아요</th><th>댓글</th><th>수집댓글</th><th>게시일</th></tr>`;
+    vids.sort((a,b)=>b.viewCount-a.viewCount).forEach((v,j)=>{
+      const cc=(collectedData[i]?.comments||[]).filter(c=>c.videoId===v.videoId).length;
+      html+=`<tr><td>${j+1}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="https://www.youtube.com/watch?v=${v.videoId}" target="_blank" style="color:#818cf8;text-decoration:none">${cleanText(v.title)}</a></td><td>${v.channelTitle}</td>
+        <td style="text-align:right">${v.viewCount.toLocaleString()}</td><td style="text-align:right">${v.likeCount.toLocaleString()}</td>
+        <td style="text-align:right">${v.commentCount.toLocaleString()}</td><td style="text-align:right;color:#22c55e">${cc}</td><td>${v.publishedAt?.slice(0,10)||''}</td></tr>`;
+    });
+    html+=`</table></div></div>`;
+    // 상위 댓글
+    const cmts=(collectedData[i]?.comments||[]).sort((a,b)=>(b.likeCount||0)-(a.likeCount||0)).slice(0,15);
+    if(cmts.length){html+=`<div class="card"><div class="card-title">${g.label} - 인기 댓글 Top 15</div><div class="kw-scroll" style="max-height:250px"><table class="kw-table"><tr><th>작성자</th><th>댓글</th><th>좋아요</th><th>영상</th></tr>`;
+      cmts.forEach(c=>{html+=`<tr><td style="white-space:nowrap">${escapeHtml(c.author||'')}</td><td style="max-width:350px;word-break:break-all">${escapeHtml((c.text||'').substring(0,200))}</td><td style="text-align:right">${c.likeCount||0}</td><td><a href="https://www.youtube.com/watch?v=${c.videoId}" target="_blank" style="color:#818cf8;font-size:11px;text-decoration:none">보기</a></td></tr>`});
+      html+=`</table></div></div>`;}
+  });
+  html+=`</div>`;
+
+  /* ── EDA (탐색) ── */
+  html+=`<div class="r-panel" id="rp-${ti++}">`;
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">`;
+  html+=`<div class="chart-wrap"><div class="chart-title">산점도: 댓글 수 vs 좋아요 수</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">댓글이 많은 영상이 좋아요도 많은지 — 참여도 간 상관관계를 확인합니다.</div><canvas id="chartScatterCmtLike" class="chart-canvas"></canvas></div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">산점도: 영상 길이(분) vs 조회수</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">짧은 영상이 더 많이 조회되는지, 영상 길이와 조회수 사이의 패턴을 확인합니다.</div><canvas id="chartScatterDurView" class="chart-canvas"></canvas></div>`;
+  html+=`</div>`;
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">`;
+  html+=`<div class="chart-wrap"><div class="chart-title">히스토그램: 조회수 분포</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">그룹별 영상 조회수가 어떤 구간에 집중되어 있는지 분포를 비교합니다.</div><canvas id="chartHistViews" class="chart-canvas"></canvas></div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">박스플롯: 그룹별 조회수</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">그룹별 조회수의 중앙값, 사분위 범위, 이상치를 한눈에 비교합니다.</div><canvas id="chartBoxViews" class="chart-canvas"></canvas></div>`;
+  html+=`</div>`;
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">`;
+  html+=`<div class="chart-wrap"><div class="chart-title">히트맵: 요일 · 시간대별 영상 업로드</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">어떤 요일, 몇 시에 영상이 가장 많이 업로드되는지 패턴을 파악합니다.</div><div id="heatmapUpload" style="overflow-x:auto"></div></div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">히트맵: 요일 · 시간대별 댓글 작성</div><div style="font-size:11px;color:#64748b;margin-bottom:8px">시청자가 어떤 요일, 몇 시에 가장 활발하게 댓글을 작성하는지 확인합니다.</div><div id="heatmapComments" style="overflow-x:auto"></div></div>`;
+  html+=`</div>`;
+  html+=`<div class="chart-wrap"><div class="chart-title">페어플롯: 조회수 · 좋아요 · 댓글수 · 영상길이</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:8px">4개 지표 간 모든 조합의 상관관계를 한 번에 비교합니다. 대각선은 각 지표의 분포(히스토그램)입니다.</div>
+    <div style="margin-bottom:10px"><label>그룹 선택</label><select id="pairplotGroup" onchange="drawPairplot()" style="width:200px">
+      <option value="all">전체</option>${groups.map((g,i)=>collectedData[i]?.youtube?.length?`<option value="${i}">${g.label}</option>`:'').join('')}
+    </select></div>
+    <div id="pairplotWrap" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:#334155;padding:4px;border-radius:8px"></div>
+  </div>`;
+  html+=`</div>`;
+
+  /* ── 그룹별 키워드 ── */
+  groups.forEach((g,i)=>{
+    if(!analysisResults[i])return;const r=analysisResults[i];const nr=newsAnalysis[i];const yr=youtubeAnalysis[i];
+    html+=`<div class="r-panel" id="rp-${ti++}">`;
+    html+=`<div class="metrics">
+      <div class="metric"><div class="metric-label">총 단어 (통합)</div><div class="metric-val">${r.totalWords.toLocaleString()}</div></div>
+      <div class="metric"><div class="metric-label">뉴스 단어</div><div class="metric-val">${nr?nr.totalWords.toLocaleString():'-'}</div><div class="metric-sub">${nr?nr.totalDocs+'건':''}</div></div>
+      <div class="metric"><div class="metric-label">유튜브 단어</div><div class="metric-val">${yr?yr.totalWords.toLocaleString():'-'}</div><div class="metric-sub">${yr?yr.totalDocs+'건':''}</div></div>
+      <div class="metric"><div class="metric-label">엔진</div><div class="metric-val" style="font-size:14px">${r.usedKiwi?'kiwipiepy':'regex'}</div></div></div>`;
+    // 뉴스 vs 유튜브 비교 차트
+    if(nr&&yr){
+      html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">`;
+      html+=`<div class="chart-wrap"><div class="chart-title">${g.label} 뉴스 상위 키워드</div><canvas id="chartKwN${i}" class="chart-canvas"></canvas></div>`;
+      html+=`<div class="chart-wrap"><div class="chart-title">${g.label} 유튜브 댓글 상위 키워드</div><canvas id="chartKwY${i}" class="chart-canvas"></canvas></div>`;
+      html+=`</div>`;
+    } else {
+      html+=`<div class="chart-wrap"><div class="chart-title">${g.label} 상위 키워드</div><canvas id="chartKw${i}" class="chart-canvas"></canvas></div>`;
+    }
+    // 뉴스 vs 유튜브 키워드 비교표
+    if(nr&&yr){
+      const nSorted=Object.entries(nr.wordFreq).sort((a,b)=>b[1]-a[1]);
+      const ySorted=Object.entries(yr.wordFreq).sort((a,b)=>b[1]-a[1]);
+      html+=`<div class="card"><div class="card-title">뉴스 vs 유튜브 키워드 비교 (Top 30)</div><div class="kw-scroll"><table class="kw-table"><tr><th>#</th><th style="color:#6366f1">뉴스</th><th>빈도</th><th style="color:#f59e0b">유튜브 댓글</th><th>빈도</th><th></th></tr>`;
+      for(let j=0;j<30;j++){
+        const nw=nSorted[j],yw=ySorted[j];
+        let word=nw?nw[0]:(yw?yw[0]:'');
+        html+=`<tr><td>${j+1}</td><td>${nw?nw[0]:'-'}</td><td>${nw?nw[1]:'-'}</td><td>${yw?yw[0]:'-'}</td><td>${yw?yw[1]:'-'}</td>
+          <td>${word?`<button class="excl-btn" onclick="excludeWord('${word}')">제외</button>`:''}</td></tr>`;
+      }
+      html+=`</table></div></div>`;
+    } else {
+      const sorted=Object.entries(r.wordFreq).sort((a,b)=>b[1]-a[1]);
+      const mf=sorted[0]?.[1]||1;
+      html+=`<div class="card"><div class="card-title">키워드 빈도 (Top 50)</div><div class="kw-scroll"><table class="kw-table"><tr><th>#</th><th>단어</th><th>빈도</th><th>비율</th><th></th></tr>`;
+      sorted.slice(0,50).forEach(([w,f],j)=>{html+=`<tr><td>${j+1}</td><td>${w}</td><td>${f}</td><td><div class="kw-bar"><div class="kw-bar-fill" style="width:${(f/mf*100).toFixed(0)}%"></div></div></td><td><button class="excl-btn" onclick="excludeWord('${w}')">제외</button></td></tr>`});
+      html+=`</table></div></div>`;
+    }
+    html+=`</div>`;
+  });
+
+  /* ── SNA ── */
+  html+=`<div class="r-panel" id="rp-${ti++}">`;
+  // 설정 카드
+  html+=`<div class="card"><div class="card-title">SNA 분석 설정</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
+    <div class="form-group"><label>분석 그룹</label><select id="snaGroupSelect">${groups.map((g,i)=>analysisResults[i]?`<option value="${i}">${g.label} (통합)</option>${newsAnalysis[i]?`<option value="${i}_news">${g.label} (뉴스)</option>`:''}${youtubeAnalysis[i]?`<option value="${i}_yt">${g.label} (유튜브)</option>`:''}`:''
+    ).join('')}</select></div>
+    <div class="form-group"><label>최소 공출현</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaThreshold" min="1" max="50" value="2" oninput="document.getElementById('snaThresholdV').value=this.value" style="flex:1"><input type="number" id="snaThresholdV" value="2" min="1" max="50" style="width:65px;text-align:center" oninput="document.getElementById('snaThreshold').value=this.value"></div></div>
+    <div class="form-group"><label>최대 노드 수</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaMaxNodes" min="10" max="100" value="50" oninput="document.getElementById('snaMaxNodesV').value=this.value" style="flex:1"><input type="number" id="snaMaxNodesV" value="50" min="10" max="100" style="width:65px;text-align:center" oninput="document.getElementById('snaMaxNodes').value=this.value"></div></div>
+    <div class="form-group"><label>라벨 표시 수</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaLabelCount" min="5" max="60" value="30" oninput="document.getElementById('snaLabelCountV').value=this.value;snaUpdateLabels()" style="flex:1"><input type="number" id="snaLabelCountV" value="30" min="5" max="60" style="width:65px;text-align:center" oninput="document.getElementById('snaLabelCount').value=this.value;snaUpdateLabels()"></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+    <div class="form-group"><label>반발력</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaRepulsion" min="50" max="600" value="200" oninput="document.getElementById('snaRepulsionV').value=this.value;snaUpdateForce()" style="flex:1"><input type="number" id="snaRepulsionV" value="200" min="50" max="600" style="width:65px;text-align:center" oninput="document.getElementById('snaRepulsion').value=this.value;snaUpdateForce()"></div></div>
+    <div class="form-group"><label>노드 크기</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaNodeScale" min="1" max="5" step="0.5" value="2" oninput="document.getElementById('snaNodeScaleV').value=this.value;snaUpdateScale()" style="flex:1"><input type="number" id="snaNodeScaleV" value="2" min="1" max="5" step="0.5" style="width:65px;text-align:center" oninput="document.getElementById('snaNodeScale').value=this.value;snaUpdateScale()"></div></div>
+    <div class="form-group"><label>텍스트 크기</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaTextSize" min="7" max="20" value="11" oninput="document.getElementById('snaTextSizeV').value=this.value;snaUpdateTextSize()" style="flex:1"><input type="number" id="snaTextSizeV" value="11" min="7" max="20" style="width:65px;text-align:center" oninput="document.getElementById('snaTextSize').value=this.value;snaUpdateTextSize()"></div></div>
+    <div class="form-group"><label>군집 해상도 (γ)</label><div style="display:flex;gap:6px;align-items:center"><input type="range" id="snaResolution" min="0.5" max="5" step="0.1" value="1" oninput="document.getElementById('snaResolutionV').value=this.value" style="flex:1"><input type="number" id="snaResolutionV" value="1" min="0.5" max="5" step="0.1" style="width:65px;text-align:center" oninput="document.getElementById('snaResolution').value=this.value"></div></div>
+  </div>
+  <div style="margin-bottom:12px"><label style="margin-bottom:6px">그래프 레이아웃</label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-sm btn-primary sna-layout-btn" data-layout="force" onclick="snaSetLayout('force')">자유 배치</button>
+      <button class="btn btn-sm btn-secondary sna-layout-btn" data-layout="cluster" onclick="snaSetLayout('cluster')">커뮤니티</button>
+      <button class="btn btn-sm btn-secondary sna-layout-btn" data-layout="pagerank" onclick="snaSetLayout('pagerank')">PageRank</button>
+      <button class="btn btn-sm btn-secondary sna-layout-btn" data-layout="eigenvector" onclick="snaSetLayout('eigenvector')">Eigenvector</button>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:0">
+    <button class="btn btn-primary" onclick="runFullSNA()">SNA 분석 실행</button>
+    <button class="btn btn-secondary btn-sm" onclick="snaRedraw()">그래프 다시 그리기</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportSnaXlsx()">XLSX</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportSnaCsv()">CSV</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportData()">전체 데이터 XLSX</button>
+  </div></div>`;
+  // 지표
+  html+=`<div id="snaMetrics" style="display:none;margin:12px 0"></div>`;
+  // 서브탭
+  html+=`<div style="display:flex;gap:4px;margin:12px 0" id="snaSubTabs" style="display:none">
+    <button class="btn btn-sm btn-primary" onclick="snaShowSub('graph')">네트워크 그래프</button>
+    <button class="btn btn-sm btn-secondary" onclick="snaShowSub('matrix')">공출현 매트릭스</button>
+    <button class="btn btn-sm btn-secondary" onclick="snaShowSub('pairs')">단어 쌍</button>
+  </div>`;
+  html+=`<div id="snaSubGraph"><div id="sna-container"></div></div>`;
+  html+=`<div id="snaSubMatrix" style="display:none"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn btn-sm btn-secondary" onclick="exportSnaMatrixCsv()">매트릭스 CSV</button><button class="btn btn-sm btn-secondary" onclick="exportSnaMatrixXlsx()">매트릭스 XLSX</button></div><div class="kw-scroll" id="snaMatrixWrap" style="max-height:500px"></div></div>`;
+  html+=`<div id="snaSubPairs" style="display:none"><div id="snaPairsList"></div></div>`;
+  html+=`<div id="snaCommunities" style="margin:12px 0"></div>`;
+  html+=`</div>`;
+
+  panelsEl.innerHTML=html;
+  setTimeout(()=>{drawOverviewCharts();drawSentimentCharts();drawSNA()},200);
+}
+
+function showResultTab(i){
+  document.querySelectorAll('.r-tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.r-panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+  // 탭 전환 시 차트 리사이즈 (hidden→visible 시 Chart.js 크기 재계산)
+  setTimeout(()=>{Object.values(chartInstances).forEach(c=>{try{c.resize()}catch{}})},100);
+}
+
+/* ═══ CHARTS ═══ */
+function drawOverviewCharts(){
+  // 시계열
+  const ds=[],allD=new Set();
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;const dc={};(d.news||[]).forEach(it=>{let s='';if(it.pubDate){const dt=new Date(it.pubDate);if(!isNaN(dt))s=dt.toISOString().slice(0,10)}if(s){dc[s]=(dc[s]||0)+1;allD.add(s)}});ds.push({label:g.label,dc,color:GC[i%GC.length]})});
+  const sd=[...allD].sort();
+  if(sd.length)makeChart('chartTimeline',{type:'line',data:{labels:sd,datasets:ds.map(d=>({label:d.label,data:sd.map(dt=>d.dc[dt]||0),borderColor:d.color,backgroundColor:d.color+'20',tension:.3,fill:true,pointRadius:3}))},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+  // 유튜브 타임라인
+  const yds=[],yaD=new Set();
+  groups.forEach((g,i)=>{const vs=collectedData[i]?.youtube||[];const dc={};vs.forEach(v=>{const s=v.publishedAt?.slice(0,10);if(s){dc[s]=(dc[s]||0)+1;yaD.add(s)}});if(Object.keys(dc).length)yds.push({label:g.label,dc,color:GC[i%GC.length]})});
+  const ysd=[...yaD].sort();
+  if(ysd.length)makeChart('chartYtTimeline',{type:'bar',data:{labels:ysd,datasets:yds.map(d=>({label:d.label,data:ysd.map(dt=>d.dc[dt]||0),backgroundColor:d.color+'99'}))},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+  // 유튜브 지표
+  const ml=[],mv=[],mli=[],mc=[];
+  groups.forEach((g,i)=>{const vs=collectedData[i]?.youtube||[];if(!vs.length)return;ml.push(g.label);mv.push(vs.reduce((s,v)=>s+v.viewCount,0));mli.push(vs.reduce((s,v)=>s+v.likeCount,0));mc.push(vs.reduce((s,v)=>s+v.commentCount,0))});
+  if(ml.length){
+    makeChart('chartYtViews',{type:'bar',data:{labels:ml,datasets:[{label:'총 조회수',data:mv,backgroundColor:ml.map((_,i)=>GC[i%GC.length])}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>formatNum(v)}}}}});
+    makeChart('chartYtEngagement',{type:'bar',data:{labels:ml,datasets:[{label:'좋아요',data:mli,backgroundColor:'#22c55e'},{label:'댓글 수',data:mc,backgroundColor:'#fbbf24'}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>formatNum(v)}}}}});
+  }
+  // 키워드 바차트 (소스별)
+  groups.forEach((g,i)=>{
+    if(!analysisResults[i])return;
+    const nr=newsAnalysis[i],yr=youtubeAnalysis[i];
+    if(nr&&yr){
+      const ns=topWords(nr.wordFreq,20);
+      makeChart(`chartKwN${i}`,{type:'bar',data:{labels:ns.map(([w])=>w),datasets:[{label:'뉴스',data:ns.map(([,f])=>f),backgroundColor:'#6366f1cc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+      const ys=topWords(yr.wordFreq,20);
+      makeChart(`chartKwY${i}`,{type:'bar',data:{labels:ys.map(([w])=>w),datasets:[{label:'유튜브',data:ys.map(([,f])=>f),backgroundColor:'#f59e0bcc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+    } else {
+      const s=topWords(analysisResults[i].wordFreq,20);
+      makeChart(`chartKw${i}`,{type:'bar',data:{labels:s.map(([w])=>w),datasets:[{label:'빈도',data:s.map(([,f])=>f),backgroundColor:GC[i%GC.length]+'cc'}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+    }
+  });
+  // EDA 차트
+  drawEdaCharts();
+}
+
+/* ═══ 감성 분석 차트 ═══ */
+function drawSentimentCharts(){
+  const sentResults=runSentimentAnalysis();
+  if(!Object.keys(sentResults).length)return;
+  const labels=[],posD=[],negD=[],neuD=[],posLD=[],negLD=[],neuLD=[];
+  groups.forEach((g,i)=>{
+    const sr=sentResults[i];if(!sr)return;
+    labels.push(g.label);
+    posD.push((sr.posCount/sr.total*100).toFixed(1));
+    negD.push((sr.negCount/sr.total*100).toFixed(1));
+    neuD.push((sr.neuCount/sr.total*100).toFixed(1));
+    posLD.push(sr.weightedPos.toFixed(1));
+    negLD.push(sr.weightedNeg.toFixed(1));
+    neuLD.push(sr.weightedNeu.toFixed(1));
+  });
+  if(labels.length){
+    makeChart('chartSentCount',{type:'bar',data:{labels,datasets:[
+      {label:'긍정',data:posD,backgroundColor:'#22c55ecc'},
+      {label:'부정',data:negD,backgroundColor:'#ef4444cc'},
+      {label:'중립',data:neuD,backgroundColor:'#64748bcc'}
+    ]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+    makeChart('chartSentLike',{type:'bar',data:{labels,datasets:[
+      {label:'긍정 공감',data:posLD,backgroundColor:'#22c55ecc'},
+      {label:'부정 공감',data:negLD,backgroundColor:'#ef4444cc'},
+      {label:'중립 공감',data:neuLD,backgroundColor:'#64748bcc'}
+    ]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+  }
+}
+
+/* ═══ EDA 차트 ═══ */
+function parseDuration(iso){
+  if(!iso)return 0;
+  const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m)return 0;
+  return(parseInt(m[1]||0)*60)+(parseInt(m[2]||0))+(parseInt(m[3]||0)/60);
+}
+
+function drawEdaCharts(){
+  // 모든 그룹의 영상 데이터 수집
+  const allVids=[];
+  groups.forEach((g,i)=>{
+    const vids=collectedData[i]?.youtube||[];
+    vids.forEach(v=>{allVids.push({...v,group:g.label,groupIdx:i,durationMin:parseDuration(v.duration)})});
+  });
+  if(!allVids.length)return;
+
+  // 1. 산점도: 댓글 vs 좋아요
+  const scatterCL=[];
+  groups.forEach((g,i)=>{
+    const vids=(collectedData[i]?.youtube||[]).map(v=>({x:v.commentCount,y:v.likeCount}));
+    if(vids.length)scatterCL.push({label:g.label,data:vids,backgroundColor:GC[i%GC.length]+'aa',pointRadius:6});
+  });
+  makeChart('chartScatterCmtLike',{type:'scatter',data:{datasets:scatterCL},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: 댓글 ${ctx.parsed.x.toLocaleString()}, 좋아요 ${ctx.parsed.y.toLocaleString()}`}}},scales:{x:{title:{display:true,text:'댓글 수',color:'#94a3b8'},beginAtZero:true},y:{title:{display:true,text:'좋아요 수',color:'#94a3b8'},beginAtZero:true}}}});
+
+  // 2. 산점도: 영상 길이 vs 조회수
+  const scatterDV=[];
+  groups.forEach((g,i)=>{
+    const vids=(collectedData[i]?.youtube||[]).map(v=>({x:parseDuration(v.duration),y:v.viewCount}));
+    if(vids.length)scatterDV.push({label:g.label,data:vids,backgroundColor:GC[i%GC.length]+'aa',pointRadius:6});
+  });
+  makeChart('chartScatterDurView',{type:'scatter',data:{datasets:scatterDV},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.x.toFixed(1)}분, 조회수 ${ctx.parsed.y.toLocaleString()}`}}},scales:{x:{title:{display:true,text:'영상 길이 (분)',color:'#94a3b8'},beginAtZero:true},y:{title:{display:true,text:'조회수',color:'#94a3b8'},beginAtZero:true,ticks:{callback:v=>formatNum(v)}}}}});
+
+  // 3. 히스토그램: 조회수 분포
+  const viewCounts=allVids.map(v=>v.viewCount).sort((a,b)=>a-b);
+  const binCount=10;
+  const vMin=viewCounts[0],vMax=viewCounts[viewCounts.length-1];
+  const binSize=Math.ceil((vMax-vMin)/binCount)||1;
+  const histLabels=[],histDatasets=[];
+  for(let b=0;b<binCount;b++){histLabels.push(`${formatNum(vMin+b*binSize)}~${formatNum(vMin+(b+1)*binSize)}`)}
+  groups.forEach((g,i)=>{
+    const vids=collectedData[i]?.youtube||[];if(!vids.length)return;
+    const bins=new Array(binCount).fill(0);
+    vids.forEach(v=>{const b=Math.min(Math.floor((v.viewCount-vMin)/binSize),binCount-1);bins[b]++});
+    histDatasets.push({label:g.label,data:bins,backgroundColor:GC[i%GC.length]+'88'});
+  });
+  makeChart('chartHistViews',{type:'bar',data:{labels:histLabels,datasets:histDatasets},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{ticks:{maxRotation:45}},y:{beginAtZero:true,title:{display:true,text:'영상 수',color:'#94a3b8'}}}}});
+
+  // 4. 박스플롯 (수동 구현 - min, q1, median, q3, max)
+  const boxData={labels:[],datasets:[{label:'조회수 분포',data:[],backgroundColor:[],borderColor:[]}]};
+  groups.forEach((g,i)=>{
+    const views=(collectedData[i]?.youtube||[]).map(v=>v.viewCount).sort((a,b)=>a-b);
+    if(!views.length)return;
+    const q1=views[Math.floor(views.length*0.25)],med=views[Math.floor(views.length*0.5)],q3=views[Math.floor(views.length*0.75)];
+    boxData.labels.push(g.label);
+    boxData.datasets[0].data.push({min:views[0],q1,med,q3,max:views[views.length-1]});
+  });
+  // 박스플롯을 바차트로 시각화 (floating bar)
+  const bLabels=boxData.labels;
+  const bMin=[],bQ1=[],bMed=[],bQ3=[],bMax=[];
+  boxData.datasets[0].data.forEach(d=>{if(d){bMin.push(d.min);bQ1.push(d.q1);bMed.push(d.med);bQ3.push(d.q3);bMax.push(d.max)}});
+  makeChart('chartBoxViews',{type:'bar',data:{labels:bLabels,datasets:[
+    {label:'Min~Q1',data:bMin.map((v,i)=>[v,bQ1[i]]),backgroundColor:'#33415566'},
+    {label:'Q1~Median',data:bQ1.map((v,i)=>[v,bMed[i]]),backgroundColor:bLabels.map((_,i)=>GC[i%GC.length]+'77')},
+    {label:'Median~Q3',data:bMed.map((v,i)=>[v,bQ3[i]]),backgroundColor:bLabels.map((_,i)=>GC[i%GC.length]+'bb')},
+    {label:'Q3~Max',data:bQ3.map((v,i)=>[v,bMax[i]]),backgroundColor:'#33415566'},
+  ]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const d=boxData.datasets[0].data[ctx.dataIndex];return d?`Min:${formatNum(d.min)} Q1:${formatNum(d.q1)} Med:${formatNum(d.med)} Q3:${formatNum(d.q3)} Max:${formatNum(d.max)}`:'';}}}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>formatNum(v)}}}}});
+
+  // 5. 히트맵: 요일-시간별 업로드
+  const days=['일','월','화','수','목','금','토'];
+  drawHeatmap('heatmapUpload',allVids.map(v=>v.publishedAt),days,'영상 수');
+
+  // 6. 히트맵: 댓글 시간
+  const allComments=[];
+  groups.forEach((g,i)=>{(collectedData[i]?.comments||[]).forEach(c=>allComments.push(c.publishedAt))});
+  drawHeatmap('heatmapComments',allComments,days,'댓글 수');
+
+  // 7. 페어플롯
+  drawPairplot();
+}
+
+function drawHeatmap(containerId,timestamps,dayLabels,valueLabel){
+  const el=document.getElementById(containerId);if(!el)return;
+  const grid=Array.from({length:7},()=>new Array(24).fill(0));
+  let total=0;
+  timestamps.forEach(ts=>{
+    if(!ts)return;const d=new Date(ts);if(isNaN(d))return;
+    grid[d.getDay()][d.getHours()]++;total++;
+  });
+  if(!total){el.innerHTML='<div style="color:#64748b;font-size:12px;padding:12px">데이터 없음</div>';return}
+
+  const maxVal=Math.max(...grid.flat(),1);
+  let html='<table style="border-collapse:collapse;font-size:11px;width:100%"><tr><td style="padding:4px 8px;color:#64748b"></td>';
+  for(let h=0;h<24;h++){html+=`<td style="text-align:center;padding:2px 0;color:#64748b;font-size:10px">${h}</td>`}
+  html+='</tr>';
+  dayLabels.forEach((day,di)=>{
+    // 일요일=0이므로 순서 조정: 월~일
+    const idx=(di+1)%7;
+    html+=`<tr><td style="padding:4px 8px;color:#94a3b8;font-weight:500;white-space:nowrap">${dayLabels[(idx+7)%7]||day}</td>`;
+    for(let h=0;h<24;h++){
+      const v=grid[(di+1)%7][h];
+      const intensity=v/maxVal;
+      const bg=v===0?'#1e293b':`rgba(99,102,241,${0.15+intensity*0.85})`;
+      html+=`<td style="text-align:center;padding:0;width:${100/24}%"><div style="background:${bg};margin:1px;border-radius:2px;height:22px;line-height:22px;color:${intensity>0.5?'#fff':'#64748b'};font-size:10px" title="${dayLabels[(di+1)%7]} ${h}시: ${v}건">${v||''}</div></td>`;
+    }
+    html+='</tr>';
+  });
+  html+='</table>';
+  el.innerHTML=html;
+}
+
+function drawPairplot(){
+  const wrap=document.getElementById('pairplotWrap');if(!wrap)return;
+  const metrics=['viewCount','likeCount','commentCount','durationMin'];
+  const metricLabels=['조회수','좋아요','댓글수','길이(분)'];
+  wrap.innerHTML='';
+
+  const selGroup=document.getElementById('pairplotGroup')?.value||'all';
+  const allVids=[];
+  groups.forEach((g,i)=>{
+    if(selGroup!=='all'&&String(i)!==selGroup)return;
+    (collectedData[i]?.youtube||[]).forEach(v=>{allVids.push({viewCount:v.viewCount,likeCount:v.likeCount,commentCount:v.commentCount,durationMin:parseDuration(v.duration),group:g.label,groupIdx:i})})
+  });
+  if(!allVids.length)return;
+
+  for(let r=0;r<4;r++){
+    for(let c=0;c<4;c++){
+      const id=`pair_${r}_${c}`;
+      const div=document.createElement('div');
+      div.style.cssText='position:relative;aspect-ratio:1;min-height:0;background:#1e293b;border-radius:4px;padding:2px';
+      const canvas=document.createElement('canvas');
+      canvas.id=id;canvas.style.cssText='width:100%;height:100%';
+      div.appendChild(canvas);wrap.appendChild(div);
+
+      if(r===c){
+        // 대각선: 히스토그램
+        const vals=allVids.map(v=>v[metrics[r]]);
+        const mn=Math.min(...vals),mx=Math.max(...vals);
+        const bs=Math.ceil((mx-mn)/8)||1;
+        const bins=new Array(8).fill(0);
+        vals.forEach(v=>{const b=Math.min(Math.floor((v-mn)/bs),7);bins[b]++});
+        makeChart(id,{type:'bar',data:{labels:bins.map((_,i)=>''),datasets:[{data:bins,backgroundColor:'#6366f1aa'}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},title:{display:true,text:metricLabels[r],color:'#94a3b8',font:{size:10}}},scales:{x:{display:false},y:{display:false}}}});
+      }else{
+        // 비대각선: 산점도
+        const datasets=[];
+        groups.forEach((g,i)=>{
+          if(selGroup!=='all'&&String(i)!==selGroup)return;
+          const pts2=(collectedData[i]?.youtube||[]).map(v=>{
+            const xv=metrics[c]==='durationMin'?parseDuration(v.duration):v[metrics[c]];
+            const yv=metrics[r]==='durationMin'?parseDuration(v.duration):v[metrics[r]];
+            return{x:xv,y:yv};
+          });
+          if(pts2.length)datasets.push({data:pts2,backgroundColor:GC[i%GC.length]+'88',pointRadius:4,label:g.label});
+        });
+        const showXLabel=r===3,showYLabel=c===0;
+        makeChart(id,{type:'scatter',data:{datasets},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},title:{display:r===0,text:metricLabels[c],color:'#94a3b8',font:{size:10}}},scales:{x:{display:showXLabel,ticks:{callback:v=>formatNum(v),font:{size:8}},title:{display:showXLabel,text:metricLabels[c],color:'#64748b',font:{size:9}}},y:{display:showYLabel,ticks:{callback:v=>formatNum(v),font:{size:8}},title:{display:showYLabel,text:metricLabels[r],color:'#64748b',font:{size:9}}}}}});
+      }
+    }
+  }
+}
+
+/* ═══ SNA (mySNASearch 동일 기능) ═══ */
+let snaNodes=[],snaEdges=[],snaSimulation=null,snaZoom=null,snaLayout='force';
+const CCOLS=d3.schemeTableau10.concat(d3.schemePaired||['#a78bfa','#f87171','#2dd4bf','#e879f9']);
+
+function snaShowSub(name){
+  ['graph','matrix','pairs'].forEach(n=>{
+    const el=document.getElementById('snaSub'+n.charAt(0).toUpperCase()+n.slice(1));
+    if(el)el.style.display=n===name?'':'none';
+  });
+}
+
+function snaSetLayout(l){
+  snaLayout=l;
+  document.querySelectorAll('.sna-layout-btn').forEach(b=>{
+    b.classList.toggle('btn-primary',b.dataset.layout===l);
+    b.classList.toggle('btn-secondary',b.dataset.layout!==l);
+  });
+  if(snaNodes.length)snaDrawNetwork();
+}
+
+/* ── Louvain 커뮤니티 (다중 재시작) ── */
+function snaDetectCommunities(nodes,edges,resolution){
+  resolution=resolution||1;if(!nodes.length)return{};
+  const m=edges.reduce((s,e)=>s+e.weight,0);
+  if(m===0){const r={};nodes.forEach((n,i)=>{r[n.id]=String(i)});return r}
+  const adj={},wdeg={};
+  nodes.forEach(n=>{adj[n.id]={};wdeg[n.id]=0});
+  edges.forEach(e=>{adj[e.source][e.target]=(adj[e.source][e.target]||0)+e.weight;adj[e.target][e.source]=(adj[e.target][e.source]||0)+e.weight;wdeg[e.source]+=e.weight;wdeg[e.target]+=e.weight});
+  let bestComm=null,bestQ=-Infinity;
+  for(let trial=0;trial<8;trial++){
+    const comm={};nodes.forEach(n=>{comm[n.id]=n.id});
+    let improved=true,rounds=0;
+    while(improved&&rounds++<25){
+      improved=false;
+      const order=[...nodes].sort(()=>Math.random()-.5);
+      order.forEach(node=>{
+        const ki=wdeg[node.id]||0,curC=comm[node.id];
+        const neighW={};Object.entries(adj[node.id]||{}).forEach(([nb,w])=>{const c=comm[nb];neighW[c]=(neighW[c]||0)+w});
+        const commDeg={};nodes.forEach(n=>{if(n.id!==node.id){const c=comm[n.id];commDeg[c]=(commDeg[c]||0)+(wdeg[n.id]||0)}});
+        let bestGain=1e-9,bestC=curC;
+        Object.entries(neighW).forEach(([c,wic])=>{if(c===curC)return;const gain=wic/m-resolution*ki*(commDeg[c]||0)/(2*m*m);if(gain>bestGain){bestGain=gain;bestC=c}});
+        if(bestC!==curC){comm[node.id]=bestC;improved=true}
+      });
+    }
+    // calc Q
+    const commL={},commD={};
+    nodes.forEach(n=>{const c=comm[n.id];commL[c]=commL[c]||0;commD[c]=(commD[c]||0)+(wdeg[n.id]||0)});
+    edges.forEach(e=>{if(comm[e.source]===comm[e.target])commL[comm[e.source]]+=e.weight});
+    const q=Object.keys(commL).reduce((s,c)=>s+commL[c]/m-Math.pow(commD[c]/(2*m),2),0);
+    if(q>bestQ){bestQ=q;bestComm={...comm}}
+  }
+  const uniq=[...new Set(Object.values(bestComm))],map={};
+  uniq.forEach((l,i)=>{map[l]=String(i)});
+  const result={};Object.entries(bestComm).forEach(([k,v])=>{result[k]=map[v]});return result;
+}
+
+function snaPageRank(nodes,edges,d=0.85,iter=30){
+  const n=nodes.length,pr={};nodes.forEach(nd=>{pr[nd.id]=1/n});
+  const inL={},outD={};
+  edges.forEach(e=>{if(!inL[e.target])inL[e.target]=[];if(!inL[e.source])inL[e.source]=[];inL[e.target].push(e.source);inL[e.source].push(e.target);outD[e.source]=(outD[e.source]||0)+1;outD[e.target]=(outD[e.target]||0)+1});
+  for(let i=0;i<iter;i++){const np={};nodes.forEach(nd=>{let s=0;(inL[nd.id]||[]).forEach(nb=>{s+=pr[nb]/(outD[nb]||1)});np[nd.id]=(1-d)/n+d*s});Object.assign(pr,np)}return pr;
+}
+
+function snaEigenvector(nodes,edges,iter=30){
+  const ev={};nodes.forEach(n=>{ev[n.id]=1});
+  const adj={};edges.forEach(e=>{if(!adj[e.source])adj[e.source]=[];if(!adj[e.target])adj[e.target]=[];adj[e.source].push({id:e.target,w:e.weight});adj[e.target].push({id:e.source,w:e.weight})});
+  for(let i=0;i<iter;i++){const ne={};nodes.forEach(n=>{ne[n.id]=(adj[n.id]||[]).reduce((s,nb)=>s+ev[nb.id]*nb.w,0)});const norm=Math.sqrt(Object.values(ne).reduce((s,v)=>s+v*v,0))||1;nodes.forEach(n=>{ev[n.id]=ne[n.id]/norm})}return ev;
+}
+
+function snaCalcMetrics(nodes,edges,communities,pr,ev){
+  const degMap={},wdegMap={};
+  nodes.forEach(n=>{degMap[n.id]=0;wdegMap[n.id]=0});
+  edges.forEach(e=>{degMap[e.source]++;degMap[e.target]++;wdegMap[e.source]+=e.weight;wdegMap[e.target]+=e.weight});
+  const avgDeg=Object.values(degMap).reduce((s,v)=>s+v,0)/(nodes.length||1);
+  const avgWDeg=Object.values(wdegMap).reduce((s,v)=>s+v,0)/(nodes.length||1);
+  const m=edges.reduce((s,e)=>s+e.weight,0);
+  let modularity=0;
+  if(m>0){const cL={},cD={};nodes.forEach(n=>{const c=communities[n.id]||'0';cL[c]=cL[c]||0;cD[c]=(cD[c]||0)+(wdegMap[n.id]||0)});edges.forEach(e=>{if((communities[e.source]||'0')===(communities[e.target]||'0'))cL[communities[e.source]||'0']+=e.weight});modularity=Object.keys(cL).reduce((s,c)=>s+cL[c]/m-Math.pow(cD[c]/(2*m),2),0)}
+  // diameter
+  const adj={};edges.forEach(e=>{if(!adj[e.source])adj[e.source]=[];if(!adj[e.target])adj[e.target]=[];adj[e.source].push(e.target);adj[e.target].push(e.source)});
+  let diameter=0;nodes.slice(0,20).forEach(start=>{const dist={[start.id]:0},q=[start.id];while(q.length){const cur=q.shift();(adj[cur]||[]).forEach(nb=>{if(dist[nb]===undefined){dist[nb]=dist[cur]+1;diameter=Math.max(diameter,dist[nb]);q.push(nb)}})}});
+  const topPR=Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([w])=>w);
+  const topEV=Object.entries(ev).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([w])=>w);
+  return{avgDeg,avgWDeg,diameter,modularity,numCommunities:new Set(Object.values(communities)).size,topPR,topEV};
+}
+
+/* ── SNA 전체 실행 ── */
+function runFullSNA(){
+  const sel=document.getElementById('snaGroupSelect')?.value||'0';
+  let gi,result;
+  if(sel.endsWith('_news')){gi=sel.replace('_news','');result=newsAnalysis[gi];}
+  else if(sel.endsWith('_yt')){gi=sel.replace('_yt','');result=youtubeAnalysis[gi];}
+  else{gi=sel;result=analysisResults[gi];}
+  if(!result)return alert('분석 데이터 없음');
+  const threshold=parseInt(document.getElementById('snaThreshold')?.value)||2;
+  const maxNodes=parseInt(document.getElementById('snaMaxNodes')?.value)||50;
+  const resolution=parseFloat(document.getElementById('snaResolution')?.value)||1;
+
+  // 공출현 매트릭스
+  const coMap={};
+  for(const doc of result.docWords){const ws=[...new Set(doc.filter(w=>!stopwords.has(w)&&!stopwords.has(w.toLowerCase())))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
+  let edges=Object.entries(coMap).filter(([,c])=>c>=threshold).map(([k,c])=>{const[s,t]=k.split('\0');return{source:s,target:t,weight:c}}).sort((a,b)=>b.weight-a.weight);
+  const nodeSet=new Set();edges.forEach(e=>{nodeSet.add(e.source);nodeSet.add(e.target)});
+  let nodes=[...nodeSet].map(id=>({id,freq:result.wordFreq[id]||0})).sort((a,b)=>b.freq-a.freq).slice(0,maxNodes);
+  const nodeIds=new Set(nodes.map(n=>n.id));
+  edges=edges.filter(e=>nodeIds.has(e.source)&&nodeIds.has(e.target));
+
+  if(!nodes.length){document.getElementById('sna-container').innerHTML='<div style="padding:40px;text-align:center;color:#64748b">공출현 빈도 '+threshold+' 이상인 단어 쌍이 없습니다. Threshold를 낮춰보세요.</div>';return}
+
+  const communities=snaDetectCommunities(nodes,edges,resolution);
+  const pr=snaPageRank(nodes,edges);
+  const ev=snaEigenvector(nodes,edges);
+  const metrics=snaCalcMetrics(nodes,edges,communities,pr,ev);
+
+  nodes.forEach(n=>{n.community=communities[n.id]||'0';n.pageRank=pr[n.id]||0;n.eigenvector=ev[n.id]||0});
+
+  snaNodes=nodes;snaEdges=edges;
+
+  // 지표 표시
+  const mel=document.getElementById('snaMetrics');mel.style.display='';
+  mel.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1.5fr 1.5fr;gap:8px">
+      <div class="sna-info-item"><div class="sna-info-label">Avg Degree</div><div class="sna-info-val">${metrics.avgDeg.toFixed(2)}</div></div>
+      <div class="sna-info-item"><div class="sna-info-label">Avg W. Degree</div><div class="sna-info-val">${metrics.avgWDeg.toFixed(2)}</div></div>
+      <div class="sna-info-item"><div class="sna-info-label">Diameter</div><div class="sna-info-val">${metrics.diameter}</div></div>
+      <div class="sna-info-item"><div class="sna-info-label">Modularity</div><div class="sna-info-val">${metrics.modularity.toFixed(3)}</div></div>
+      <div class="sna-info-item"><div class="sna-info-label">Top PageRank</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-top:2px">${metrics.topPR.join(', ')}</div></div>
+      <div class="sna-info-item"><div class="sna-info-label">Top Eigenvector</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-top:2px">${metrics.topEV.join(', ')}</div></div>
+    </div>`;
+
+  // 군집 상세
+  const commMap={};nodes.forEach(n=>{const c=n.community;if(!commMap[c])commMap[c]=[];commMap[c].push(n)});
+  const sortedComms=Object.entries(commMap).sort((a,b)=>b[1].length-a[1].length);
+  let comHtml='<div class="card"><div class="card-title">군집 상세</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">';
+  sortedComms.forEach(([c,members],rank)=>{
+    const pct=(members.length/nodes.length*100).toFixed(1);
+    const topW=members.sort((a,b)=>b.freq-a.freq).slice(0,8).map(n=>n.id);
+    comHtml+=`<div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px 14px;border-left:3px solid ${CCOLS[c%CCOLS.length]}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:13px;color:#e2e8f0;font-weight:600">군집 ${rank+1}</span>
+        <span style="font-size:11px;color:#64748b">${members.length}개 (${pct}%)</span>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6">${topW.join(', ')}</div>
+    </div>`;
+  });
+  comHtml+='</div></div>';
+  document.getElementById('snaCommunities').innerHTML=comHtml;
+
+  snaRenderMatrix(nodes,edges);
+  snaRenderPairs(edges);
+  snaDrawNetwork();
+}
+
+/* ── D3 네트워크 시각화 ── */
+function snaDrawNetwork(){
+  const container=document.getElementById('sna-container');if(!container)return;container.innerHTML='';
+  if(!snaNodes.length)return;
+
+  const W=container.clientWidth||800,H=550;
+  const svg=d3.select(container).append('svg').attr('width','100%').attr('height',H).attr('viewBox',`0 0 ${W} ${H}`).attr('id','snaSvg');
+  const g=svg.append('g');
+
+  snaZoom=d3.zoom().scaleExtent([0.2,5]).on('zoom',e=>g.attr('transform',e.transform));
+  svg.call(snaZoom);
+
+  const labelCount=parseInt(document.getElementById('snaLabelCount')?.value)||30;
+  const repulsion=parseInt(document.getElementById('snaRepulsion')?.value)||200;
+  const nodeScale=parseFloat(document.getElementById('snaNodeScale')?.value)||2;
+  const textSize=parseInt(document.getElementById('snaTextSize')?.value)||11;
+
+  const comms=[...new Set(snaNodes.map(n=>n.community))];
+  const colorMap={};comms.forEach((c,i)=>{colorMap[c]=CCOLS[i%CCOLS.length]});
+  const maxFreq=Math.max(...snaNodes.map(n=>n.freq),1);
+  const nodeR=n=>Math.max(4,Math.sqrt(n.freq/maxFreq)*20*nodeScale);
+  const maxW=Math.max(...snaEdges.map(e=>e.weight),1);
+  const linkW=e=>Math.sqrt(e.weight/maxW)*4+0.5;
+
+  const simNodes=snaNodes.map(n=>({...n}));
+  const simEdges=snaEdges.map(e=>({...e,source:simNodes.find(n=>n.id===e.source),target:simNodes.find(n=>n.id===e.target)})).filter(e=>e.source&&e.target);
+
+  let sim;
+  if(snaLayout==='cluster'){
+    const commCenters={};comms.forEach((c,i)=>{const a=(i/comms.length)*2*Math.PI-Math.PI/2;const r=Math.min(W,H)*(comms.length<=2?0.2:0.3);commCenters[c]={x:W/2+r*Math.cos(a),y:H/2+r*Math.sin(a)}});
+    sim=d3.forceSimulation(simNodes).force('link',d3.forceLink(simEdges).strength(0.08).distance(35)).force('charge',d3.forceManyBody().strength(-repulsion*0.35)).force('x',d3.forceX(d=>commCenters[d.community]?.x||W/2).strength(0.55)).force('y',d3.forceY(d=>commCenters[d.community]?.y||H/2).strength(0.55)).force('collision',d3.forceCollide(d=>nodeR(d)+4));
+  }else if(snaLayout==='pagerank'||snaLayout==='eigenvector'){
+    const sortKey=snaLayout==='eigenvector'?'eigenvector':'pageRank';
+    const sorted=[...simNodes].sort((a,b)=>(b[sortKey]||0)-(a[sortKey]||0));
+    const rankMap={};sorted.forEach((n,i)=>{rankMap[n.id]=i});
+    const ringSize=7;
+    const radialPos=id=>{const rank=rankMap[id]||0;if(rank===0)return{x:W/2,y:H/2};const ring=Math.floor((rank-1)/ringSize)+1;const pos=(rank-1)%ringSize;const cnt=Math.min(ringSize,simNodes.length-(ring-1)*ringSize-1);const a=(pos/cnt)*2*Math.PI-Math.PI/2;const r=ring*Math.min(W,H)*0.13;return{x:W/2+r*Math.cos(a),y:H/2+r*Math.sin(a)}};
+    sim=d3.forceSimulation(simNodes).force('link',d3.forceLink(simEdges).strength(0.05).distance(50)).force('charge',d3.forceManyBody().strength(-repulsion*0.25)).force('x',d3.forceX(d=>radialPos(d.id).x).strength(0.75)).force('y',d3.forceY(d=>radialPos(d.id).y).strength(0.75)).force('collision',d3.forceCollide(d=>nodeR(d)+3));
+  }else{
+    sim=d3.forceSimulation(simNodes).force('link',d3.forceLink(simEdges).strength(0.3).distance(d=>80/(d.weight/maxW+0.1))).force('charge',d3.forceManyBody().strength(-repulsion)).force('center',d3.forceCenter(W/2,H/2)).force('collision',d3.forceCollide(d=>nodeR(d)+3));
+  }
+  snaSimulation=sim;
+
+  const link=g.append('g').selectAll('line').data(simEdges).enter().append('line').attr('stroke','#475569').attr('stroke-width',linkW).attr('stroke-opacity',.35);
+  const nodeG=g.append('g').selectAll('g').data(simNodes).enter().append('g')
+    .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
+  nodeG.append('circle').attr('r',nodeR).attr('fill',d=>colorMap[d.community]||'#aaa').attr('stroke','#fff').attr('stroke-width',1.5).attr('opacity',.85);
+  nodeG.append('text').text(d=>d.id).attr('dx',d=>nodeR(d)+2).attr('dy','.35em').attr('fill','#cbd5e1').attr('font-size',textSize+'px').attr('font-weight',500).attr('pointer-events','none').style('display',(d,i)=>i<labelCount?null:'none');
+  nodeG.append('title').text(d=>`${d.id}\n빈도: ${d.freq}\nPageRank: ${(d.pageRank||0).toFixed(4)}\nEigenvector: ${(d.eigenvector||0).toFixed(4)}\n커뮤니티: ${+d.community+1}`);
+
+  sim.on('tick',()=>{link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);nodeG.attr('transform',d=>`translate(${d.x},${d.y})`)});
+}
+
+function snaRedraw(){if(snaNodes.length)snaDrawNetwork()}
+function snaUpdateLabels(){const v=parseInt(document.getElementById('snaLabelCount')?.value)||30;d3.select('#snaSvg').selectAll('text').style('display',(d,i)=>i<v?null:'none')}
+function snaUpdateForce(){const v=parseInt(document.getElementById('snaRepulsion')?.value)||200;if(snaSimulation){snaSimulation.force('charge',d3.forceManyBody().strength(-v));snaSimulation.alpha(.3).restart()}}
+function snaUpdateScale(){snaRedraw()}
+function snaUpdateTextSize(){const v=parseInt(document.getElementById('snaTextSize')?.value)||11;d3.select('#snaSvg').selectAll('text').attr('font-size',v+'px')}
+
+/* ── 공출현 매트릭스 ── */
+function snaRenderMatrix(nodes,edges){
+  const words=nodes.slice(0,30).map(n=>n.id);
+  const coMap={};edges.forEach(e=>{coMap[`${e.source}\0${e.target}`]=e.weight;coMap[`${e.target}\0${e.source}`]=e.weight});
+  const vals=edges.map(e=>e.weight).sort((a,b)=>b-a);
+  const q3=vals[Math.floor(vals.length*0.25)]||1,q1=vals[Math.floor(vals.length*0.75)]||0;
+  let html='<table class="kw-table"><tr><th></th>'+words.map(w=>`<th style="font-size:10px;writing-mode:vertical-rl;max-width:20px">${w}</th>`).join('')+'</tr>';
+  words.forEach(rw=>{html+=`<tr><td style="font-weight:600">${rw}</td>`;words.forEach(cw=>{if(rw===cw){html+='<td style="background:#334155;color:#64748b">—</td>';return}const v=coMap[`${rw}\0${cw}`]||0;const bg=v>=q3?'rgba(99,102,241,.25)':v>=q1&&v>0?'rgba(99,102,241,.1)':'';html+=`<td style="text-align:center;background:${bg}">${v||''}</td>`});html+='</tr>'});
+  html+='</table>';
+  document.getElementById('snaMatrixWrap').innerHTML=html;
+}
+
+/* ── 공출현 매트릭스 다운로드 ── */
+function snaGetMatrixData(){
+  const words=snaNodes.slice(0,30).map(n=>n.id);
+  const coMap={};snaEdges.forEach(e=>{coMap[`${e.source}\0${e.target}`]=e.weight;coMap[`${e.target}\0${e.source}`]=e.weight});
+  const rows=words.map(rw=>{const row={키워드:rw};words.forEach(cw=>{row[cw]=rw===cw?0:(coMap[`${rw}\0${cw}`]||0)});return row});
+  return rows;
+}
+async function exportSnaMatrixCsv(){
+  if(!snaNodes.length)return alert('SNA 데이터 없음');
+  const rows=snaGetMatrixData();
+  const r=await fetch('/api/export/csv',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'SNA_공출현매트릭스.csv',rows})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='SNA_공출현매트릭스.csv';a.click();URL.revokeObjectURL(u);
+}
+async function exportSnaMatrixXlsx(){
+  if(!snaNodes.length)return alert('SNA 데이터 없음');
+  const rows=snaGetMatrixData();
+  const r=await fetch('/api/export/xlsx',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'SNA_공출현매트릭스.xlsx',matrixRows:rows})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='SNA_공출현매트릭스.xlsx';a.click();URL.revokeObjectURL(u);
+}
+
+/* ── 단어 쌍 ── */
+function snaRenderPairs(edges){
+  const sorted=[...edges].sort((a,b)=>b.weight-a.weight).slice(0,100);
+  const maxW=sorted[0]?.weight||1;
+  document.getElementById('snaPairsList').innerHTML='<div class="card"><div class="card-title">단어 쌍 Top 100</div>'+sorted.map(e=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #1e293b;font-size:12px">
+      <div style="min-width:140px;color:#e2e8f0">${e.source} — ${e.target}</div>
+      <div style="flex:1;height:4px;background:#334155;border-radius:2px;overflow:hidden"><div style="height:100%;width:${e.weight/maxW*100}%;background:#6366f1;border-radius:2px"></div></div>
+      <div style="min-width:30px;text-align:right;font-weight:600;color:#e2e8f0">${e.weight}</div>
+    </div>`).join('')+'</div>';
+}
+
+/* ── 초기 호출용 (renderResults에서) ── */
+function drawSNA(){ runFullSNA(); }
+
+/* ═══ SNA EXPORT ═══ */
+async function exportSnaXlsx(){
+  if(!snaNodes.length)return alert('SNA 데이터 없음');
+  const r=await fetch('/api/export/xlsx',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'SNA_분석.xlsx',nodes:snaNodes.map(n=>({id:n.id})),edges:snaEdges})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='SNA_분석.xlsx';a.click();URL.revokeObjectURL(u);
+}
+async function exportSnaCsv(){
+  if(!snaEdges.length)return alert('SNA 데이터 없음');
+  const rows=snaEdges.map(e=>({Source:e.source,Target:e.target,Weight:e.weight}));
+  const r=await fetch('/api/export/csv',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'SNA_엣지.csv',rows})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='SNA_엣지.csv';a.click();URL.revokeObjectURL(u);
+}
+async function exportData(){
+  const rawData=[];
+  for(const[gi,data]of Object.entries(collectedData)){const label=groups[gi]?.label||gi;
+    for(const it of(data.news||[]))rawData.push({group:label,source:'news',title:cleanText(it.title),description:cleanText(it.description),date:it.pubDate||'',press:it.bloggername||''});
+    for(const c of(data.comments||[]))rawData.push({group:label,source:'youtube',title:'',description:c.text||'',date:c.publishedAt||'',author:c.author||''});
+  }
+  const r=await fetch('/api/export/xlsx',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:'전체데이터.xlsx',rawData})});
+  const b=await r.blob();const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='전체데이터.xlsx';a.click();URL.revokeObjectURL(u);
+}
+
+/* ═══ AI PROMPTS ═══ */
+function generatePrompts(){
+  const question=document.getElementById('researchQuestion')?.value||'';
+  const summaries=[];
+  for(const[gi,r]of Object.entries(analysisResults)){
+    const g=groups[gi],d=collectedData[gi];
+    const top20=topWords(r.wordFreq,20);
+
+    // 커뮤니티 정보
+    const topWordSet=new Set(topWords(r.wordFreq,40).map(([w])=>w));
+    const coMap={};
+    for(const doc of r.docWords){const ws=[...new Set(doc.filter(w=>topWordSet.has(w)))];for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const k=[ws[i],ws[j]].sort().join('\0');coMap[k]=(coMap[k]||0)+1}}
+    const edges=Object.entries(coMap).filter(([,w])=>w>=2);
+    const nodeSet=new Set();edges.forEach(([k])=>{const[s,t]=k.split('\0');nodeSet.add(s);nodeSet.add(t)});
+    const density=nodeSet.size>1?(2*edges.length)/(nodeSet.size*(nodeSet.size-1)):0;
+
+    // 유튜브 영상 상세
+    let ytDetail='';
+    if(d.youtube?.length){
+      const totalViews=(d.youtube||[]).reduce((s,v)=>s+v.viewCount,0);
+      const totalLikes=(d.youtube||[]).reduce((s,v)=>s+v.likeCount,0);
+      const totalComments=(d.youtube||[]).reduce((s,v)=>s+v.commentCount,0);
+      ytDetail=`유튜브 영상 ${d.youtube.length}개, 총 조회수 ${totalViews.toLocaleString()}, 총 좋아요 ${totalLikes.toLocaleString()}, 총 댓글수 ${totalComments.toLocaleString()}`;
+      ytDetail+=`\n영상별 상세:`;
+      d.youtube.sort((a,b)=>b.viewCount-a.viewCount).forEach((v,j)=>{
+        ytDetail+=`\n  ${j+1}. "${v.title}" (${v.channelTitle}) - 조회수:${v.viewCount.toLocaleString()}, 좋아요:${v.likeCount.toLocaleString()}, 댓글:${v.commentCount.toLocaleString()}, 길이:${v.duration||'N/A'}, 게시일:${v.publishedAt?.slice(0,10)||''}`;
+      });
+    }
+    // 댓글 시간대 분포
+    let cmtTimeInfo='';
+    if(d.comments?.length){
+      const hourDist=new Array(24).fill(0);
+      const dayDist=new Array(7).fill(0);
+      d.comments.forEach(c=>{if(c.publishedAt){const dt=new Date(c.publishedAt);if(!isNaN(dt)){hourDist[dt.getHours()]++;dayDist[dt.getDay()]++}}});
+      const dayNames=['일','월','화','수','목','금','토'];
+      const topHours=hourDist.map((v,i)=>({h:i,v})).sort((a,b)=>b.v-a.v).slice(0,5).map(x=>`${x.h}시(${x.v}건)`).join(', ');
+      const topDays=dayDist.map((v,i)=>({d:dayNames[i],v})).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>`${x.d}(${x.v}건)`).join(', ');
+      cmtTimeInfo=`\n댓글 시간대 분포 - 활발한 시간: ${topHours} / 활발한 요일: ${topDays}`;
+    }
+
+    // 감성 분석 결과
+    let sentInfo='';
+    const sentResults=runSentimentAnalysis();
+    const sr=sentResults[gi];
+    if(sr){
+      const posP=(sr.posCount/sr.total*100).toFixed(1),negP=(sr.negCount/sr.total*100).toFixed(1),neuP=(sr.neuCount/sr.total*100).toFixed(1);
+      sentInfo=`\n감성 분석: 긍정 ${sr.posCount}건(${posP}%) / 부정 ${sr.negCount}건(${negP}%) / 중립 ${sr.neuCount}건(${neuP}%)`;
+      sentInfo+=`\n좋아요 가중 공감도: 긍정 ${sr.weightedPos.toFixed(1)}% / 부정 ${sr.weightedNeg.toFixed(1)}% / 중립 ${sr.weightedNeu.toFixed(1)}%`;
+      if(sr.topPos.length){sentInfo+=`\n공감 많은 긍정 댓글: ${sr.topPos.slice(0,3).map(c=>`"${(c.text||'').substring(0,60)}..."(좋아요 ${c.likes})`).join(' / ')}`;}
+      if(sr.topNeg.length){sentInfo+=`\n공감 많은 부정 댓글: ${sr.topNeg.slice(0,3).map(c=>`"${(c.text||'').substring(0,60)}..."(좋아요 ${c.likes})`).join(' / ')}`;}
+    }
+    // 소스별 키워드
+    let srcKwInfo='';
+    const nr=newsAnalysis[gi],yr=youtubeAnalysis[gi];
+    if(nr){const nTop=topWords(nr.wordFreq,10);srcKwInfo+=`\n뉴스 상위 키워드: ${nTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
+    if(yr){const yTop=topWords(yr.wordFreq,10);srcKwInfo+=`\n유튜브 댓글 상위 키워드: ${yTop.map(([w,f])=>`${w}(${f})`).join(', ')}`;}
+
+    summaries.push(`[${g.label}] 검색어: "${g.keyword}", 기간: ${g.dateFrom||'전체'}~${g.dateTo||'전체'}
+수집량: 뉴스 ${d.news?.length||0}건, 유튜브 댓글 ${d.comments?.length||0}건
+${ytDetail}${cmtTimeInfo}${sentInfo}
+상위 키워드(통합): ${top20.map(([w,f])=>`${w}(${f})`).join(', ')}${srcKwInfo}
+네트워크: 노드 ${nodeSet.size}개, 엣지 ${edges.length}개, 밀도 ${density.toFixed(3)}`);
+  }
+  const ctx=summaries.join('\n\n');
+
+  const prompts=[
+    {title:'인사이트 분석',prompt:`다음은 "${question||'주제'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터에서 발견되는 핵심 패턴, 의미 있는 차이점, 주목할 만한 인사이트를 분석해주세요. 그룹 간 비교에 초점을 맞춰주세요. 특히 단어 공출현 네트워크의 모듈성(Modularity)을 기준으로 각 그룹의 담론 구조가 어떻게 다른지 해석해주세요.`},
+    {title:'학술적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 학술적 관점에서 해석해주세요. 의제설정 이론, 프레이밍 이론, 미디어 담론 분석 등을 적용하고, 단어 공출현 네트워크의 모듈성(Modularity)과 커뮤니티 구조를 중심으로 분석해주세요.`},
+    {title:'사회적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 사회 구조적 맥락에서 해석해주세요. 사회적 흐름, 집단 심리, 여론 형성 과정을 중심으로 분석하고, 네트워크 모듈성을 기반으로 담론의 분절화 정도를 평가해주세요.`},
+    {title:'문화적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 문화적 코드와 담론의 관점에서 해석해주세요. 한국 사회의 문화적 맥락을 고려하여 분석해주세요.`},
+    {title:'기술적 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기술 트렌드와 산업 변화의 관점에서 해석해주세요.`},
+    {title:'비즈니스 분석',prompt:`다음은 "${question||'주제'}"에 대한 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 마케팅/PR 전략 수립의 관점에서 분석해주세요.`},
+    {title:'통합 분석 보고서',prompt:`다음은 "${question||'주제'}"에 대한 멀티소스 데이터 분석 결과입니다.\n\n${ctx}\n\n위 데이터를 기반으로 종합 보고서를 작성해주세요.\n\n[보고서 요구사항]\n1. 학술적, 사회적, 문화적, 기술적, 비즈니스 관점을 모두 포함\n2. 단어 공출현 네트워크의 모듈성(Modularity)을 중심으로 각 그룹의 담론 구조 차이를 비교 분석\n3. 보고서 형식: docx/html/pdf로 바로 변환 가능한 구조로 작성\n4. 반드시 포함할 항목:\n   - 표지 (제목, 작성일, 작성자)\n   - 목차 (점선 리더와 페이지 번호를 직접 텍스트로 작성. 예: "1. 서론 ··················· 2")\n   - 1. 서론 (연구 배경, 목적, 방법론)\n   - 2. 데이터 수집 개요 (소스별 수집량, 기간, 검색어)\n   - 3. 키워드 분석 (그룹별 상위 키워드 비교표)\n   - 4. SNA 네트워크 분석 (커뮤니티 구조, Modularity, PageRank, Eigenvector 해석)\n   - 5. 감성 분석 (키워드 사전 기반 긍정/부정/중립 분류, 좋아요 가중 공감도, 그룹 간 감성 비율 변화)\n   - 6. 소스별 비교 분석 (뉴스 vs 유튜브 댓글 키워드 차이)\n   - 7. 그룹별 비교 분석 (학술적/사회적/문화적/기술적/비즈니스 관점)\n   - 8. 결론 및 제언\n   - 참고문헌 (이론적 배경과 분석 기술/방법론 관련 문헌만 포함. 뉴스 기사나 유튜브 영상은 제외)\n5. 페이지 번호는 실제 본문 위치와 대조하여 보정할 것\n6. 목차는 Word의 TOC 필드가 아닌 실제 텍스트로 직접 작성하여 점선 리더와 페이지 번호가 바로 보이도록 할 것\n7. 각 장의 시작에는 페이지 나누기를 포함할 것\n8. 다음 그래프/시각화 삽입 위치를 본문 중 적절한 곳에 [그림 X: 제목] 형태로 표시하고, 그래프 아래에 캡션을 포함할 것:\n   - [그림 1: 그룹별 수집량 비교 차트]\n   - [그림 2: 뉴스 기사 수 시계열 추이]\n   - [그림 3: 그룹별 총 조회수 비교]\n   - [그림 4: 그룹별 좋아요/댓글 수 비교]\n   - [그림 5: 상위 키워드 빈도 비교 (그룹 A)]\n   - [그림 6: 상위 키워드 빈도 비교 (그룹 B)]\n   - [그림 7: 상위 키워드 빈도 비교 (그룹 C)]\n   - [그림 8: SNA 공출현 네트워크 그래프 (그룹 A)] — 노드 크기=빈도, 엣지 굵기=공출현, 색상=군집\n   - [그림 9: SNA 공출현 네트워크 그래프 (그룹 B)]\n   - [그림 10: SNA 공출현 네트워크 그래프 (그룹 C)]\n   - [그림 11: 산점도 — 댓글 수 vs 좋아요 수]\n   - [그림 12: 산점도 — 영상 길이 vs 조회수]\n   - [그림 13: 히트맵 — 요일·시간대별 댓글 분포]\n   - [그림 14: 페어플롯 — 조회수·좋아요·댓글수·영상길이]\n   - [그림 15: 그룹별 댓글 감성 비율 (건수 기준)]\n   - [그림 16: 그룹별 좋아요 가중 감성 비율 (공감도)]\n   - [그림 17: 뉴스 vs 유튜브 키워드 비교 (그룹별)]\n9. 모든 그래프는 본문 좌우 여백에 맞춰 중앙 정렬하고, 너비는 본문 폭의 90~100%로 통일할 것\n10. 최종 파일명은 주제을 토대로 한글 핵심 키워드를 조합하여 제안할 것 (예: "코스피_돌파시점_대중반응_비교분석_보고서.docx")\n11. 중요: 위에 제공된 데이터(영상별 조회수, 좋아요, 댓글수, 영상 길이, 댓글 시간대 분포)는 모두 실측 데이터입니다. 추정값을 생성하지 말고, 제공된 실제 데이터만 사용하여 작성할 것. 데이터가 없는 항목은 '데이터 없음'으로 표기할 것\n12. 보고서 작성 완료 후 아래 자체 검증을 수행하고, 검증 결과를 보고서 맨 끝에 [자체 검증 결과] 섹션으로 첨부할 것:\n   - 조회수/좋아요/댓글수: 보고서 내 수치가 제공된 원본 데이터와 일치하는지 확인\n   - 뉴스 건수: 그룹별 수집량이 원본과 일치하는지 확인\n   - 키워드 순위/빈도: 상위 키워드 순위와 빈도가 원본과 일치하는지 확인\n   - SNA 지표: Modularity, PageRank, Eigenvector 값이 원본과 일치하는지 확인\n   - 댓글 시간대: 활발한 시간/요일이 원본과 일치하는지 확인\n   - "추정/예상/추산/가정" 단어가 보고서 본문에 사용되었는지 검색하여, 있다면 해당 부분을 실측 데이터 기반으로 수정할 것\n   - 모든 그래프 캡션에 "추정 기반" 표현이 없는지 확인할 것\n   - 참고문헌 최종 점검: 이론적 배경(프레이밍 이론, 의제설정 이론 등)과 분석 기술/방법론(SNA, Louvain, PageRank, 형태소 분석 등) 관련 문헌만 남기고, 뉴스 기사, 유튜브 영상, 블로그 포스트, 통계 자료, 정책 보고서 등은 모두 제거할 것. 참고문헌은 10개 이내로 핵심만 포함할 것`},
+    ...customPrompts
+  ];
+
+  const basePrompts=prompts.slice(0,7);
+  const customP=prompts.slice(7);
+  const promptColors=['#6366f1','#38bdf8','#f472b6','#fbbf24','#34d399','#fb923c','#a78bfa'];
+  const promptIcons=['💡','🎓','🌐','🎭','⚙️','💼','📊'];
+
+  function promptCard(p,i,color,icon,extra=''){
+    return `<div class="prompt-card" style="margin:0;border:1px solid ${color}88;border-left:4px solid ${color};background:${color}30">
+      <div class="prompt-header">
+        <div class="prompt-title" style="display:flex;align-items:center;gap:6px;color:${color}"><span>${icon}</span>${p.title}</div>
+        <div style="display:flex;gap:4px"><button class="copy-btn" style="border-color:${color}44;color:${color}" onclick="copyPrompt(${i},this)">복사</button>${extra}</div>
+      </div>
+      <div class="prompt-text" id="prompt-${i}" style="color:#e2e8f0">${escapeHtml(p.prompt)}</div>
+    </div>`;
+  }
+
+  let pHtml='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">';
+  basePrompts.slice(0,4).forEach((p,i)=>{pHtml+=promptCard(p,i,promptColors[i],promptIcons[i])});
+  pHtml+='</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">';
+  basePrompts.slice(4,7).forEach((p,j)=>{const i=j+4;pHtml+=promptCard(p,i,promptColors[i],promptIcons[i])});
+  pHtml+='</div>';
+  if(customP.length){
+    pHtml+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:10px">';
+    customP.forEach((p,j)=>{const i=j+7;
+      pHtml+=promptCard(p,i,'#94a3b8','📝',`<button class="copy-btn" style="border-color:#dc2626;color:#ef4444" onclick="customPrompts.splice(${j},1);generatePrompts()">삭제</button>`);
+    });
+    pHtml+='</div>';
+  }
+  document.getElementById('promptsContainer').innerHTML=pHtml;
+}
+
+function copyPrompt(i,btn){navigator.clipboard.writeText(document.getElementById(`prompt-${i}`).textContent).then(()=>{btn.textContent='복사됨!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='복사';btn.classList.remove('copied')},2000)})}
+
+function addCustomPrompt(){
+  const title=prompt('프롬프트 제목:');if(!title)return;
+  const text=prompt('프롬프트 내용 (분석 결과는 자동 포함됩니다):');if(!text)return;
+  const ctx=Object.entries(analysisResults).map(([gi,r])=>{const g=groups[gi];const top=topWords(r.wordFreq,20);return`[${g.label}] ${top.map(([w,f])=>`${w}(${f})`).join(', ')}`}).join('\n');
+  customPrompts.push({title,prompt:`${text}\n\n[분석 데이터]\n${ctx}`});
+  generatePrompts();
+}
+
+/* ═══ REPORT ═══ */
+function renderReportSections(){
+  document.getElementById('reportSections').innerHTML=reportSections.map((s,i)=>`
+    <div class="report-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <input value="${s.title}" onchange="reportSections[${i}].title=this.value" style="width:200px;font-size:13px;font-weight:600;background:transparent;border:none;color:#e2e8f0;padding:0">
+        ${reportSections.length>1?`<button class="excl-btn" onclick="reportSections.splice(${i},1);renderReportSections()">삭제</button>`:''}
+      </div>
+      <textarea placeholder="AI 해석 결과를 여기에 붙여넣으세요..." onchange="reportSections[${i}].content=this.value">${s.content||''}</textarea>
+    </div>`).join('');
+}
+function addReportSection(){reportSections.push({title:'새 섹션',content:''});renderReportSections()}
+
+function exportReport(format){
+  const question=document.getElementById('researchQuestion')?.value||'';
+  const title=`myDataAnalysis 분석 보고서`;
+  const date=new Date().toLocaleDateString('ko-KR');
+
+  // 데이터 요약
+  let dataSummary='';
+  groups.forEach((g,i)=>{const d=collectedData[i];if(!d)return;
+    dataSummary+=`### ${g.label}\n- 검색어: ${g.keyword}\n- 기간: ${g.dateFrom||'전체'} ~ ${g.dateTo||'전체'}\n- 뉴스: ${d.news?.length||0}건, 유튜브 댓글: ${d.comments?.length||0}건\n\n`});
+
+  // 키워드 요약
+  let kwSummary='';
+  Object.entries(analysisResults).forEach(([gi,r])=>{
+    const top=topWords(r.wordFreq,15);
+    kwSummary+=`### ${groups[gi].label}\n| 순위 | 단어 | 빈도 |\n|------|------|------|\n`;
+    top.forEach(([w,f],j)=>{kwSummary+=`| ${j+1} | ${w} | ${f} |\n`});
+    kwSummary+='\n';
+  });
+
+  const sections=reportSections.filter(s=>s.content.trim());
+  let md=`# ${title}\n\n**주제:** ${question}\n**작성일:** ${date}\n\n---\n\n## 1. 데이터 수집 개요\n\n${dataSummary}\n## 2. 핵심 키워드 분석\n\n${kwSummary}`;
+  sections.forEach((s,i)=>{md+=`\n## ${i+3}. ${s.title}\n\n${s.content}\n`});
+
+  if(format==='md'){
+    const blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
+    const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='보고서.md';a.click();URL.revokeObjectURL(u);
+  } else if(format==='html'||format==='pdf'){
+    const htmlContent=`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>${title}</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+body{font-family:'Noto Sans KR',sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a1a;line-height:1.8}
+h1{font-size:24px;border-bottom:2px solid #6366f1;padding-bottom:8px;margin-bottom:20px}
+h2{font-size:18px;color:#4338ca;margin-top:30px;margin-bottom:12px}
+h3{font-size:15px;color:#334155;margin-top:20px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{background:#f1f5f9;padding:8px 12px;text-align:left;border-bottom:2px solid #cbd5e1}
+td{padding:7px 12px;border-bottom:1px solid #e2e8f0}
+hr{border:none;border-top:1px solid #e2e8f0;margin:20px 0}
+p{margin-bottom:10px}
+@media print{body{margin:0;padding:20px}}
+</style></head><body>${md.replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>').replace(/\n\n/g,'</p><p>').replace(/\| (.+)/g,m=>{
+      const cells=m.split('|').filter(c=>c.trim());
+      if(cells[0]?.includes('---'))return'';
+      const tag=cells[0]?.includes('순위')?'th':'td';
+      return'<tr>'+cells.map(c=>`<${tag}>${c.trim()}</${tag}>`).join('')+'</tr>'
+    }).replace(/<tr>/g,(m,i,s)=>{const before=s.substring(Math.max(0,i-20),i);return before.includes('</tr>')||before.includes('<table')?m:'<table>'+m}).replace(/(<\/tr>)(?!\s*<tr)/g,'$1</table>')}</body></html>`;
+
+    if(format==='pdf'){
+      const w=window.open('','_blank');w.document.write(htmlContent);w.document.close();setTimeout(()=>w.print(),500);
+    }else{
+      const blob=new Blob([htmlContent],{type:'text/html;charset=utf-8'});
+      const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='보고서.html';a.click();URL.revokeObjectURL(u);
+    }
+  }
+}
+
+/* ═══ SETTINGS ═══ */
+function openSettings(){document.getElementById('settingsModal').classList.add('show');fetch('/api/config/load').then(r=>r.json()).then(c=>{document.getElementById('cfgYoutubeKey').value=c.youtubeApiKey||''}).catch(()=>{})}
+async function saveSettings(){const b={};const f=(id)=>document.getElementById(id).value.trim();
+  if(f('cfgYoutubeKey'))b.youtubeApiKey=f('cfgYoutubeKey');
+  await fetch('/api/config/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});alert('저장됨');closeModal('settingsModal')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+
+function renderCheckStatus(containerId, data, showInstallBtn) {
+  const checks = [
+    { label: 'Node.js', ok: true, detail: data.nodeVersion || '', desc: '서버 실행 (이미 실행 중)', link: '' },
+    { label: 'Python 3', ok: data.python, detail: data.pythonVersion || '', desc: '형태소 분석 엔진', link: 'https://www.python.org/downloads/' },
+    { label: 'kiwipiepy', ok: data.kiwipiepy, detail: '', desc: '한국어 명사 추출 (C++ 기반)', link: '' },
+  ];
+  const el = document.getElementById(containerId);
+  el.innerHTML = checks.map(c => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #334155">
+      <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
+        background:${c.ok ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)'};color:${c.ok ? '#22c55e' : '#ef4444'}">
+        ${c.ok ? '&#x2713;' : '&#x2717;'}
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:600;color:#e2e8f0">${c.label}
+          ${c.detail ? `<span style="font-size:11px;color:#64748b;font-weight:400;margin-left:6px">${c.detail}</span>` : ''}
+        </div>
+        <div style="font-size:11px;color:#64748b">${c.desc}</div>
+      </div>
+      ${!c.ok && c.link ? `<a href="${c.link}" target="_blank" style="font-size:11px;color:#818cf8;text-decoration:none">다운로드 &rarr;</a>` : ''}
+    </div>
+  `).join('');
+
+  // kiwipiepy 미설치 시 자동 설치 버튼
+  if (showInstallBtn && data.python && !data.kiwipiepy) {
+    el.innerHTML += `<div style="margin-top:12px;padding:12px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:8px">
+      <div style="font-size:12px;color:#c7d2fe;margin-bottom:8px">Python이 설치되어 있으므로 kiwipiepy를 자동으로 설치할 수 있습니다.</div>
+      <button class="btn btn-primary btn-sm" onclick="installKiwiFromModal('${containerId}')">kiwipiepy 자동 설치</button>
+    </div>`;
+  }
+
+  if (!data.python) {
+    el.innerHTML += `<div style="margin-top:12px;padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:8px">
+      <div style="font-size:12px;color:#fcd34d;margin-bottom:4px">Python 미설치 시</div>
+      <div style="font-size:11px;color:#a16207">형태소 분석이 정규식 기반으로 전환됩니다. 정확도가 떨어질 수 있습니다.</div>
+    </div>`;
+  }
+
+  return checks.every(c => c.ok);
+}
+
+async function fetchSetupStatus() {
+  const [checkResp, nodeResp] = await Promise.all([
+    fetch('/api/setup/check').then(r => r.json()),
+    fetch('/api/setup/node').then(r => r.json()),
+  ]);
+  return { ...checkResp, nodeVersion: nodeResp.version };
+}
+
+function openSetup() {
+  document.getElementById('setupModal').classList.add('show');
+  document.getElementById('setupStatus').innerHTML = '<div style="text-align:center;color:#64748b;padding:12px">확인 중...</div>';
+  fetchSetupStatus().then(data => renderCheckStatus('setupStatus', data, true));
+}
+
+function installKiwiFromModal(containerId) {
+  const logId = containerId === 'welcomeChecks' ? 'welcomeInstallLog' : 'setupInstallLog';
+  const logEl = document.getElementById(logId);
+  logEl.style.display = 'block';
+  logEl.innerHTML = '';
+
+  const evtSource = new EventSource('/api/setup/install');
+  evtSource.onmessage = (e) => {
+    const d = JSON.parse(e.data);
+    const cls = d.type === 'done' ? 'log-ok' : d.type === 'error' ? 'log-err' : '';
+    logEl.innerHTML += `<div class="${cls}">${d.msg}</div>`;
+    logEl.scrollTop = logEl.scrollHeight;
+
+    if (d.type === 'done' || d.type === 'error') {
+      evtSource.close();
+      if (d.type === 'done') {
+        setTimeout(() => fetchSetupStatus().then(data => renderCheckStatus(containerId, data, false)), 1000);
+      }
+    }
+  };
+  evtSource.onerror = () => { evtSource.close(); logEl.innerHTML += '<div class="log-err">연결 오류</div>'; };
+}
+
+/* ═══ 히스토리 ═══ */
+async function loadHistoryList(){
+  try{
+    const list=await(await fetch('/api/history/list')).json();
+    const el=document.getElementById('historyList');
+    if(!list.length){el.innerHTML='<div style="color:#64748b;font-size:12px;padding:16px;text-align:center">저장된 히스토리가 없습니다.</div>';return}
+    el.innerHTML=list.map((h,i)=>`
+      <div class="hist-item" data-id="${h.id}">
+        <input type="checkbox" class="hist-check" data-id="${h.id}">
+        <div class="hist-num">${i+1}</div>
+        <div class="hist-date">${h.date||''}</div>
+        <div class="hist-question" onclick="loadHistory('${h.id}')" title="${escapeHtml(h.question||'')}">${escapeHtml((h.question||'').substring(0,60))||'(질문 없음)'}</div>
+        <div class="hist-groups">${(h.groups||[]).map(g=>`<span class="hist-group-tag">${g}</span>`).join('')}</div>
+        <div class="hist-actions">
+          <button class="hist-act" onclick="moveHistory('${h.id}',-1)" title="위로">&#x25B2;</button>
+          <button class="hist-act" onclick="moveHistory('${h.id}',1)" title="아래로">&#x25BC;</button>
+          <button class="hist-act" onclick="deleteHistory('${h.id}')" title="삭제" style="color:#ef4444">&#x2715;</button>
+        </div>
+      </div>`).join('');
+  }catch{document.getElementById('historyList').innerHTML='<div style="color:#ef4444;font-size:12px;padding:12px">히스토리 로드 실패</div>'}
+}
+
+async function saveToHistory(){
+  const question=document.getElementById('researchQuestion')?.value||'';
+  if(!question&&!groups.some(g=>g.keyword)){alert('주제이나 그룹 설정을 먼저 입력해주세요.');return;}
+  try{
+    const body={question,groups,collectedData,analysisResults,newsAnalysis,youtubeAnalysis,stopwordsList:[...stopwords],date:new Date().toISOString().slice(0,10)};
+    const r=await(await fetch('/api/history/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+    if(r.success){alert('저장되었습니다.');loadHistoryList()}
+  }catch(e){alert('저장 실패: '+e.message)}
+}
+
+async function loadHistory(id){
+  try{
+    const data=await(await fetch('/api/history/load/'+id)).json();
+    if(data.error){alert(data.error);return}
+    // 복원
+    document.getElementById('researchQuestion').value=data.question||'';
+    groups=data.groups||[];
+    renderGroups();
+    collectedData=data.collectedData||{};
+    analysisResults=data.analysisResults||{};
+    newsAnalysis=data.newsAnalysis||{};
+    youtubeAnalysis=data.youtubeAnalysis||{};
+    if(data.stopwordsList)stopwords=new Set(data.stopwordsList);
+
+    // 데이터가 있으면 바로 결과로
+    if(Object.keys(analysisResults).length){
+      renderResults();goStep(3);
+    }else if(Object.keys(collectedData).length){
+      renderCollectPreview();goStep(2);
+    }else{
+      goStep(1);
+    }
+  }catch(e){alert('로드 실패: '+e.message)}
+}
+
+async function deleteHistory(id){
+  if(!confirm('이 히스토리를 삭제하시겠습니까?'))return;
+  await fetch('/api/history/'+id,{method:'DELETE'});
+  loadHistoryList();
+}
+
+async function histDeleteSelected(){
+  const checked=[...document.querySelectorAll('.hist-check:checked')].map(c=>c.dataset.id);
+  if(!checked.length)return alert('선택된 항목이 없습니다.');
+  if(!confirm(`${checked.length}개 항목을 삭제하시겠습니까?`))return;
+  await fetch('/api/history/delete-multiple',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:checked})});
+  loadHistoryList();
+}
+
+function histSelectAll(){document.querySelectorAll('.hist-check').forEach(c=>{c.checked=true;c.closest('.hist-item').classList.add('selected')})}
+function histDeselectAll(){document.querySelectorAll('.hist-check').forEach(c=>{c.checked=false;c.closest('.hist-item').classList.remove('selected')})}
+
+async function moveHistory(id,dir){
+  // 서버에서 리스트를 가져와서 순서 변경 후 파일명으로 재저장
+  const list=await(await fetch('/api/history/list')).json();
+  const idx=list.findIndex(h=>h.id===id);
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=list.length)return;
+  // 두 파일의 내용을 교환
+  const [a,b]=[list[idx],list[newIdx]];
+  const dataA=await(await fetch('/api/history/load/'+a.id)).json();
+  const dataB=await(await fetch('/api/history/load/'+b.id)).json();
+  // A의 내용을 B의 파일명으로, B의 내용을 A의 파일명으로
+  await fetch('/api/history/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:a.id,...dataB})});
+  await fetch('/api/history/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.id,...dataA})});
+  loadHistoryList();
+}
+
+// 첫 실행 체크 + 히스토리 로드
+(async function init() {
+  try {
+    const data = await fetchSetupStatus();
+    const allOk = data.python && data.kiwipiepy;
+    if (!allOk && !localStorage.getItem('setupDone')) {
+      document.getElementById('welcomeModal').classList.add('show');
+      renderCheckStatus('welcomeChecks', data, true);
+    }
+  } catch {}
+  loadHistoryList();
+})()
+</script>
+</body>
+</html>

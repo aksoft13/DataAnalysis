@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>발표자료 디자인 시스템 샘플</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--primary:#4f46e5;--primary-light:#e0e7ff;--text:#1e293b;--text-light:#64748b;--border:#e2e8f0;--bg-code:#f8fafc}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',-apple-system,sans-serif;color:var(--text);line-height:1.85;font-size:15px;background:#fff}
+
+.cover-page{
+  width:100%;height:100vh;
+  display:flex;flex-direction:column;
+  background:#fff;
+  page-break-after:always;
+}
+.cover-hero{
+  flex:1;
+  background:#4f46e5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px;
+  position:relative;
+}
+.cover-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 50%,rgba(124,58,237,.6) 0%,transparent 50%),
+             radial-gradient(circle at 80% 30%,rgba(99,102,241,.5) 0%,transparent 50%);
+}
+.cover-hero>*{position:relative;z-index:1}
+.cover-badge{
+  border:1.5px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85);
+  padding:6px 24px;border-radius:20px;font-size:11px;font-weight:600;
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:40px;
+}
+.cover-title{
+  font-size:32px;font-weight:900;color:#fff;text-align:center;
+  line-height:1.6;margin-bottom:20px;max-width:620px;
+}
+.cover-title span{color:#c7d2fe}
+.cover-subtitle{
+  font-size:15px;color:rgba(255,255,255,.7);text-align:center;letter-spacing:.5px;
+}
+.cover-info-area{
+  background:#fff;padding:36px 40px 44px;text-align:center;
+  border-top:4px solid var(--primary);
+}
+.cover-info-area .course{
+  display:inline-block;background:var(--primary-light);color:var(--primary);
+  padding:5px 18px;border-radius:6px;font-size:12px;font-weight:700;
+  letter-spacing:.5px;margin-bottom:16px;
+}
+.cover-info-area .univ{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px}
+.cover-info-area .names{font-size:15px;color:var(--text);font-weight:500;margin-bottom:6px}
+.cover-info-area .date{font-size:13px;color:var(--text-light)}
+
+.content{max-width:780px;margin:0 auto;padding:40px 48px}
+h2{font-size:20px;font-weight:700;margin:40px 0 18px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--text)}
+h2::before{content:'';display:inline-block;width:8px;height:8px;background:var(--primary);border-radius:50%;margin-right:10px;vertical-align:middle}
+h3{font-size:15px;font-weight:700;color:var(--primary);margin:22px 0 10px}
+p{margin-bottom:10px}
+ul,ol{margin:6px 0 14px 20px}
+li{margin-bottom:5px}
+li strong{color:#334155}
+strong{color:#334155}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6366f1}
+pre{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:18px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.65;margin:14px 0 20px;color:#334155}
+pre code{background:none;padding:0;font-size:inherit}
+blockquote{border-left:4px solid var(--primary);background:var(--primary-light);padding:12px 18px;margin:14px 0 20px;border-radius:0 8px 8px 0;font-size:13.5px;color:#3730a3}
+blockquote strong{color:var(--primary)}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+em{color:var(--text-light);font-style:normal;font-size:13px}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+th{background:#f1f5f9;font-weight:600;color:#334155;padding:8px 12px;text-align:left;border:1px solid #cbd5e1}
+td{padding:8px 12px;border:1px solid #cbd5e1;color:var(--text)}
+td.num{text-align:right}
+
+.pos{color:#16a34a;font-weight:600}
+.neg{color:#dc2626;font-weight:600}
+.neu{color:#64748b;font-weight:600}
+
+.figure{text-align:center;margin:20px 0;padding:40px;background:#f8fafc;border:1px dashed var(--border);border-radius:8px;color:var(--text-light);font-size:13px}
+.figure-caption{font-size:12px;color:var(--text-light);margin-top:8px;font-style:italic}
+
+.footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-light);text-align:center}
+
+@media print{
+  .cover-page{height:100vh;margin:0;padding:0}
+  .content{max-width:none;padding:10px 0}
+  h2{page-break-before:always}
+  h2:first-child{page-break-before:avoid}
+  body{font-size:12.5px;line-height:1.7}
+  pre{font-size:10px;padding:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- 표지 -->
+<div class="cover-page">
+  <div class="cover-hero">
+    <div class="cover-badge">Sample Presentation</div>
+    <div class="cover-title">
+      발표자료<br>
+      <span>디자인 시스템</span> 샘플
+    </div>
+    <div class="cover-subtitle">발표자료 디자인 시스템 샘플</div>
+  </div>
+  <div class="cover-info-area">
+    <div class="course">데이터 수집 및 분석 프로그래밍</div><br>
+    <div class="univ">고려대학교 미디어대학원 6조</div>
+    <div class="names">이성훈 &nbsp;&middot;&nbsp; 김성희</div>
+    <div class="date">2026. 06. 03</div>
+  </div>
+</div>
+
+<!-- 본문 -->
+<div class="content">
+
+<h2>1. 텍스트 스타일</h2>
+
+<h3>기본 텍스트</h3>
+<p>이것은 기본 본문 텍스트입니다. <strong>굵은 텍스트</strong>와 <em>이탤릭 텍스트</em>를 지원합니다. 인라인 코드는 <code>이렇게</code> 표시됩니다.</p>
+
+<h3>목록</h3>
+<ul>
+  <li><strong>첫 번째 항목</strong>: 설명 텍스트</li>
+  <li><strong>두 번째 항목</strong>: 설명 텍스트</li>
+  <li><strong>세 번째 항목</strong>: 설명 텍스트</li>
+</ul>
+<ol>
+  <li>순서가 있는 항목</li>
+  <li>두 번째 항목</li>
+  <li>세 번째 항목</li>
+</ol>
+
+<h3>인용문</h3>
+<blockquote>
+  <p><strong>핵심 발견</strong>: 코스피 돌파 수치가 높아질수록 네트워크 밀도가 증가(0.415 → 0.554 → 0.572)하여, 키워드 간 연결이 더 촘촘해지고 담론이 수렴하는 경향을 보인다.</p>
+</blockquote>
+
+<hr>
+
+<h2>2. 표 스타일</h2>
+
+<h3>데이터 비교 표</h3>
+<table>
+  <thead>
+    <tr><th>구간</th><th>뉴스 건수</th><th>댓글 건수</th><th>총 조회수</th><th>총 좋아요</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>코스피 5000</strong></td><td class="num">267건</td><td class="num">8,181건</td><td class="num">21,803,006</td><td class="num">650,557</td></tr>
+    <tr><td><strong>코스피 6000</strong></td><td class="num">282건</td><td class="num">5,167건</td><td class="num">8,540,616</td><td class="num">281,421</td></tr>
+    <tr><td><strong>코스피 7000</strong></td><td class="num">278건</td><td class="num">4,709건</td><td class="num">9,754,490</td><td class="num">284,909</td></tr>
+    <tr><td><strong>코스피 8000</strong></td><td class="num">291건</td><td class="num">3,144건</td><td class="num">3,708,619</td><td class="num">109,226</td></tr>
+  </tbody>
+</table>
+
+<h3>감성 분석 결과</h3>
+<table>
+  <thead>
+    <tr><th>구간</th><th>긍정</th><th>부정</th><th>중립</th><th>가중 긍정</th><th>가중 부정</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>5000</strong></td><td class="num pos">29.4%</td><td class="num neg">7.9%</td><td class="num neu">62.8%</td><td class="num pos">19.5%</td><td class="num neg">12.8%</td></tr>
+    <tr><td><strong>6000</strong></td><td class="num pos">27.3%</td><td class="num neg">9.8%</td><td class="num neu">62.8%</td><td class="num pos">22.1%</td><td class="num neg">11.7%</td></tr>
+    <tr><td><strong>7000</strong></td><td class="num pos">28.5%</td><td class="num neg">8.0%</td><td class="num neu">63.6%</td><td class="num pos">28.3%</td><td class="num neg">8.3%</td></tr>
+    <tr><td><strong>8000</strong></td><td class="num pos">30.2%</td><td class="num neg">9.6%</td><td class="num neu">60.2%</td><td class="num pos">23.4%</td><td class="num neg">9.1%</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>3. 코드블록 &amp; 다이어그램</h2>
+
+<h3>아키텍처 다이어그램</h3>
+<pre><code>┌─────────────────────────┐
+│   프론트엔드 (브라우저)     │
+│   HTML + JS + D3.js      │
+└────────────┬────────────┘
+             │ HTTP
+┌────────────┴────────────┐
+│   백엔드 (Node.js)        │
+│   Express + Axios         │
+└────────────┬────────────┘
+             │ spawn
+┌────────────┴────────────┐
+│   Python (kiwipiepy)      │
+│   형태소 분석 엔진         │
+└─────────────────────────┘</code></pre>
+
+<h3>분석 흐름</h3>
+<pre><code>[데이터 수집] → [전처리] → [형태소 분석] → [키워드 빈도 + SNA]
+                              ↓
+                        [감성 분석] → [긍정/부정/중립 + 공감도]</code></pre>
+
+<hr>
+
+<h2>4. 그림 삽입 위치</h2>
+
+<div class="figure">
+  [그림 1: 그룹별 수집량 비교 차트]
+  <div class="figure-caption">4개 그룹(5000/6000/7000/8000)의 뉴스 건수, 유튜브 댓글 수, 총 조회수를 비교합니다.</div>
+</div>
+
+<div class="figure">
+  [그림 2: 그룹별 댓글 감성 비율 (건수 기준)]
+  <div class="figure-caption">감성 분석 결과를 스택 바 차트로 시각화한 것입니다.</div>
+</div>
+
+<hr>
+
+<h2>5. 활용 방안</h2>
+
+<h3>실무 적용</h3>
+<p>본 플랫폼은 검색어와 기간만 변경하면 <strong>어떤 주제·브랜드·캠페인</strong>이든 동일한 분석이 가능합니다.</p>
+
+<table>
+  <thead>
+    <tr><th>분야</th><th>검색어 예시</th><th>분석 포인트</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>마케팅/PR</strong></td><td>브랜드명</td><td>감성 비율 변화, 부정 댓글 패턴</td></tr>
+    <tr><td><strong>정책 분석</strong></td><td>정책 키워드</td><td>뉴스 vs 유튜브 프레이밍 차이</td></tr>
+    <tr><td><strong>투자 심리</strong></td><td>종목 키워드</td><td>감성 추이, 네트워크 밀도</td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>시사점</strong>: 뉴스의 긍정 프레이밍과 대중 실제 감성 사이의 괴리는 PR 캠페인 설계 시 반드시 고려해야 할 변수이다.</p>
+</blockquote>
+
+<div class="footer">
+  고려대학교 미디어대학원 6조 | 이성훈 / 김성희 | 2026. 06. 03
+</div>
+
+</div>
+
+</body>
+</html>
